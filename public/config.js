@@ -1,9 +1,9 @@
 var config = {
-    CONTRACT_ADDRESS: '0x1234567890123456789012345678901234567890', // Demo mode
-    PINATA_API_KEY: '524c401de3e5176e6f46',
-    PINATA_SECRET_KEY: '2a83244231dd404f740d39cae84d2fb2afe2c866a02fd9d7002fc7cf5e1c010b',
+    CONTRACT_ADDRESS: '0x1234567890123456789012345678901234567890', // Demo mode - replace with deployed contract address
+    PINATA_API_KEY: 'YOUR_PINATA_API_KEY', // Replace with your Pinata API key
+    PINATA_SECRET_KEY: 'YOUR_PINATA_SECRET_KEY', // Replace with your Pinata secret key
     IPFS_GATEWAY: 'https://gateway.pinata.cloud/ipfs/',
     NETWORK_ID: 11155111,
     NETWORK_NAME: 'Sepolia Testnet',
-    DEMO_MODE: true // Skip blockchain calls for demo
+    DEMO_MODE: true // Set to false for production
 };

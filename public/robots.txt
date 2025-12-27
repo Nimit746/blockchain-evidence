@@ -4,4 +4,4 @@ Disallow: /admin/
 Disallow: /config.js
 Disallow: /*.js$
 
-Sitemap: https://blockchain-evidence.vercel.app/sitemap.xml
+Sitemap: https://blockchain-evidence.onrender.com/sitemap.xml

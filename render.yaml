@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: blockchain-evidence
+    env: static
+    buildCommand: echo "No build required"
+    staticPublishPath: ./public
+    headers:
+      - path: /*
+        headers:
+          - name: X-Frame-Options
+            value: DENY
+          - name: X-XSS-Protection
+            value: 1; mode=block
+          - name: X-Content-Type-Options
+            value: nosniff
+          - name: Referrer-Policy
+            value: strict-origin-when-cross-origin
+          - name: Permissions-Policy
+            value: camera=(), microphone=(), geolocation=()
+      - path: /*.js
+        headers:
+          - name: Cache-Control
+            value: public, max-age=31536000, immutable
+      - path: /*.css
+        headers:
+          - name: Cache-Control
+            value: public, max-age=31536000, immutable
+      - path: /*.png
+        headers:
+          - name: Cache-Control
+            value: public, max-age=31536000, immutable
+      - path: /*.jpg
+        headers:
+          - name: Cache-Control
+            value: public, max-age=31536000, immutable
+      - path: /*.ico
+        headers:
+          - name: Cache-Control
+            value: public, max-age=31536000, immutable
