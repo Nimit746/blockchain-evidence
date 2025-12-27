@@ -108,10 +108,10 @@ async function checkRegistrationStatus() {
                 return;
             }
             
-            // Check if user is admin
+            // Check if user is admin - show options instead of auto-redirect
             if (userInfo.role === 'admin') {
-                localStorage.setItem('currentUser', userAccount);
-                window.location.href = 'admin.html';
+                updateAdminUI(userInfo);
+                toggleSections('alreadyRegistered');
                 return;
             }
             
@@ -126,10 +126,10 @@ async function checkRegistrationStatus() {
         if (savedUser) {
             const localUserInfo = JSON.parse(savedUser);
             
-            // Check if it's an admin in localStorage
+            // Check if it's an admin in localStorage - show options instead of auto-redirect
             if (localUserInfo.role === 8 || localUserInfo.role === 'admin') {
-                localStorage.setItem('currentUser', userAccount);
-                window.location.href = 'admin.html';
+                updateAdminUI(localUserInfo);
+                toggleSections('alreadyRegistered');
                 return;
             }
             
@@ -161,6 +161,26 @@ function updateUserUI(userInfo) {
         userRoleName.className = `badge badge-${getRoleClass(role)}`;
     }
     if (userDepartment) userDepartment.textContent = userInfo.department || 'Public';
+}
+
+function updateAdminUI(userInfo) {
+    const userName = document.getElementById('userName');
+    const userRoleName = document.getElementById('userRoleName');
+    const userDepartment = document.getElementById('userDepartment');
+    const dashBtn = document.getElementById('goToDashboard');
+    
+    if (userName) userName.textContent = userInfo.fullName || userInfo.full_name;
+    if (userRoleName) {
+        userRoleName.textContent = '👑 Administrator';
+        userRoleName.className = 'badge badge-admin';
+    }
+    if (userDepartment) userDepartment.textContent = 'System Administration';
+    
+    // Change dashboard button to admin dashboard
+    if (dashBtn) {
+        dashBtn.textContent = '👑 Go to Admin Dashboard';
+        dashBtn.onclick = goToAdminDashboard;
+    }
 }
 
 function toggleSections(activeSection) {
@@ -267,6 +287,11 @@ function getFormData() {
 async function goToDashboard() {
     localStorage.setItem('currentUser', userAccount);
     window.location.href = 'dashboard.html';
+}
+
+async function goToAdminDashboard() {
+    localStorage.setItem('currentUser', userAccount);
+    window.location.href = 'admin.html';
 }
 
 function getRoleClass(role) {

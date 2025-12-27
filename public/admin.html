@@ -684,8 +684,13 @@
             // Clear all localStorage data
             localStorage.clear();
             
-            // Force page reload and redirect
-            window.location.replace('index.html');
+            // Show logout message
+            showAlert('Logging out...', 'success');
+            
+            // Force page reload and redirect after short delay
+            setTimeout(() => {
+                window.location.replace('index.html');
+            }, 1000);
         }
     </script>
 </body>
