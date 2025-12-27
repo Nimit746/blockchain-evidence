@@ -441,9 +441,6 @@ class DashboardManager {
 
             if (modal) modal.classList.add('active');
 
-            // Log access
-            await storage.logActivity(this.userAccount, 'EVIDENCE_VIEWED', `Viewed evidence: ${evidence.title}`);
-
         } catch (error) {
             console.error('Error viewing evidence:', error);
             this.showAlert('Error loading evidence details', 'error');
@@ -471,8 +468,6 @@ class DashboardManager {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            // Log download
-            await storage.logActivity(this.userAccount, 'EVIDENCE_DOWNLOADED', `Downloaded evidence: ${evidence.title}`);
             this.showAlert('Evidence downloaded successfully', 'success');
             
         } catch (error) {
@@ -499,10 +494,6 @@ class DashboardManager {
             } else {
                 this.showAlert('❌ File integrity check failed - Evidence may have been modified', 'error');
             }
-
-            // Log verification
-            await storage.logActivity(this.userAccount, 'INTEGRITY_CHECK', 
-                `Integrity check for evidence ${evidenceId}: ${currentHash === originalHash ? 'PASSED' : 'FAILED'}`);
             
         } catch (error) {
             console.error('Error verifying integrity:', error);
