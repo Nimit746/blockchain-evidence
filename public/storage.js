@@ -490,7 +490,7 @@ class Storage {
         if (file.size > config.MAX_FILE_SIZE) {
             throw new Error('File size exceeds 50MB limit');
         }
-        if (!config.ALLOWED_TYPES.some(type => file.type.startsWith(type.replace('*', '')))) {
+        if (!config.ALLOWED_TYPES.some(type => file.type.startsWith(type.replace(/\*$/, '')))) {
             throw new Error('File type not allowed');
         }
         return true;
