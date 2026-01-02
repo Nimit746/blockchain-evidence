@@ -17,6 +17,11 @@ const roleMapping = {
 // Initialize app
 document.addEventListener('DOMContentLoaded', initializeApp);
 
+/**
+ * Set up application event handlers, initialize the hamburger menu, and attempt to auto-connect MetaMask if available.
+ *
+ * Attaches click/submit handlers for wallet connection, registration submission, and dashboard navigation, initializes the hamburger menu UI, and, when a web3 provider exists, tries to restore an existing MetaMask connection.
+ */
 async function initializeApp() {
     const connectBtn = document.getElementById('connectWallet');
     const regForm = document.getElementById('registrationForm');
@@ -42,6 +47,11 @@ async function initializeApp() {
     }
 }
 
+/**
+ * Sets up the hamburger menu toggle and closes the menu when a navigation link is clicked.
+ *
+ * If elements with IDs "menuToggle" or "navMenu" are not present, the function does nothing.
+ */
 // Initialize hamburger menu
 function initializeHamburgerMenu() {
     const menuToggle = document.getElementById('menuToggle');
@@ -62,6 +72,11 @@ function initializeHamburgerMenu() {
     }
 }
 
+/**
+ * Connects to the user's Ethereum wallet (MetaMask) or uses a demo address when MetaMask is unavailable, then updates application state and UI.
+ *
+ * Attempts to request accounts from window.ethereum; on success, sets the global `userAccount`, updates the wallet UI, and checks the user's registration status. If no provider is present, assigns a fixed demo address, updates UI, and checks registration. Shows loading and error alerts as needed and records analytics events when `trackUserAction` is available.
+ */
 async function connectWallet() {
     try {
         showLoading(true);
@@ -122,6 +137,17 @@ function updateWalletUI() {
     }
 }
 
+/**
+ * Verify whether the currently connected wallet address is registered and update the UI to reflect the result.
+ *
+ * Checks the primary database (via `window.storage.getUser`) when available, falls back to `localStorage` for backward
+ * compatibility, and updates the interface accordingly:
+ * - If the account is inactive, shows an error and logs the user out.
+ * - If the account is an admin, configures the admin UI and shows the "already registered" section.
+ * - If the account is a regular registered user, configures the user UI and shows the "already registered" section.
+ * - If no record is found, displays the registration form.
+ * On unexpected errors, shows an error alert and displays the registration form.
+ */
 async function checkRegistrationStatus() {
     try {
         if (!userAccount) {
@@ -237,6 +263,12 @@ function toggleSections(activeSection) {
     });
 }
 
+/**
+ * Handle the registration form submission: validate input, persist the new user's data, track the registration event, and redirect to the dashboard on success.
+ *
+ * Prevents administrator self-registration, requires a connected wallet, saves the prepared user record to localStorage (always) and to window.storage when available, shows loading/alert UI for status, and attempts to track the registration via analytics when available.
+ * @param {Event} event - The form submit event.
+ */
 async function handleRegistration(event) {
     event.preventDefault();
     
@@ -386,6 +418,11 @@ async function goToAdminDashboard() {
     window.location.href = 'admin.html';
 }
 
+/**
+ * Get the CSS class name associated with a numeric role identifier.
+ * @param {number} role - Numeric role identifier (e.g., 1 for public, 8 for admin).
+ * @returns {string} The corresponding CSS role class name; `'public'` if the role is unrecognized.
+ */
 function getRoleClass(role) {
     const roleClasses = {
         1: 'public', 2: 'investigator', 3: 'forensic', 4: 'legal',
@@ -394,6 +431,11 @@ function getRoleClass(role) {
     return roleClasses[role] || 'public';
 }
 
+/**
+ * Logs the current user out and restores the application to its initial unauthenticated state.
+ *
+ * Clears all stored client data, resets the in-memory wallet state and the connect button UI, shows only the wallet section, and navigates to index.html to reload the app.
+ */
 // eslint-disable-next-line no-unused-vars
 function logout() {
     // Clear all stored data
@@ -415,6 +457,12 @@ function logout() {
     window.location.replace('index.html');
 }
 
+/**
+ * Disconnects the currently connected wallet and restores the app to its initial connect state.
+ *
+ * Clears stored wallet state, resets the connect button to an enabled "Connect MetaMask Wallet" state,
+ * hides registration and status sections, shows the wallet connect section, and displays a success alert.
+ */
 // eslint-disable-next-line no-unused-vars
 function disconnectWallet() {
     // Clear wallet connection
