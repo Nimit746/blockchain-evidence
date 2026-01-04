@@ -5,6 +5,11 @@ const rateLimit = require('express-rate-limit');
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
 
+// Audit logging - Issue #32
+const auditLoggerService = require('./services/auditLogger.service');
+const { evidenceAuditMiddleware, logEvidenceAction } = require('./middlewares/auditLogger.middleware');
+const auditLogsRoutes = require('./routes/auditLogs.routes');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -46,7 +51,7 @@ const allowedRoles = ['public_viewer', 'investigator', 'forensic_analyst', 'lega
 const verifyAdmin = async (req, res, next) => {
     try {
         const { adminWallet } = req.body;
-        
+
         if (!adminWallet || !validateWalletAddress(adminWallet)) {
             return res.status(400).json({ error: 'Invalid admin wallet address' });
         }
@@ -206,6 +211,13 @@ const checkCasePermission = async (req, res, next) => {
 
 // API Routes
 app.use("/api/auth", authRoutes);
+
+// Audit Logs API Routes - Issue #32 (Admin/Auditor access only)
+app.use("/api/audit-logs", auditLogsRoutes);
+
+// Apply audit middleware to evidence endpoints
+app.use('/api/cases/:caseId/evidence', evidenceAuditMiddleware);
+
 // Health check
 /**
  * @swagger
@@ -250,7 +262,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api/user/:wallet', async (req, res) => {
     try {
         const { wallet } = req.params;
-        
+
         if (!validateWalletAddress(wallet)) {
             return res.status(400).json({ error: 'Invalid wallet address' });
         }
@@ -488,7 +500,7 @@ app.post('/api/admin/delete-user', adminLimiter, verifyAdmin, async (req, res) =
         // Soft delete user
         const { error } = await supabase
             .from('users')
-            .update({ 
+            .update({
                 is_active: false,
                 last_updated: new Date().toISOString()
             })
@@ -546,8 +558,8 @@ app.post('/api/admin/users', adminLimiter, verifyAdmin, async (req, res) => {
 
 // Prevent user self-deletion
 app.post('/api/user/delete-self', (req, res) => {
-    res.status(403).json({ 
-        error: 'Users cannot delete their own accounts. Contact administrator.' 
+    res.status(403).json({
+        error: 'Users cannot delete their own accounts. Contact administrator.'
     });
 });
 
@@ -953,6 +965,7 @@ app.post('/api/cases/:caseId/assign', checkCasePermission, async (req, res) => {
 app.get('/api/cases/:caseId/evidence', checkCasePermission, async (req, res) => {
     try {
         const { caseId } = req.params;
+        const user = req.user;
 
         const { data: evidence, error } = await supabase
             .from('evidence')
@@ -965,7 +978,39 @@ app.get('/api/cases/:caseId/evidence', checkCasePermission, async (req, res) => 
             .order('created_at', { ascending: false });
 
         if (error) {
+            // Log failed access attempt - Issue #32
+            await auditLoggerService.logAction({
+                actionType: auditLoggerService.ACTION_TYPES.ACCESS,
+                evidenceId: null,
+                userId: user?.wallet_address || user?.id || req.headers['x-user-wallet'],
+                userRole: user?.role || 'unknown',
+                status: auditLoggerService.ACTION_STATUS.FAILURE,
+                details: {
+                    error: error.message,
+                    evidenceCount: 0
+                },
+                ipAddress: req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.connection?.remoteAddress,
+                caseId: caseId
+            });
             throw error;
+        }
+
+        // Log evidence access - Issue #32
+        // Note: This logs bulk access; individual evidence access should be logged separately
+        if (evidence && evidence.length > 0) {
+            await auditLoggerService.logAction({
+                actionType: auditLoggerService.ACTION_TYPES.ACCESS,
+                evidenceId: evidence.map(e => e.evidence_id).join(','), // Multiple evidence IDs
+                userId: user?.wallet_address || user?.id || req.headers['x-user-wallet'],
+                userRole: user?.role || 'unknown',
+                status: auditLoggerService.ACTION_STATUS.SUCCESS,
+                details: {
+                    evidenceCount: evidence.length,
+                    accessType: 'LIST_VIEW'
+                },
+                ipAddress: req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.connection?.remoteAddress,
+                caseId: caseId
+            });
         }
 
         res.json({ evidence: evidence || [] });
@@ -1012,10 +1057,45 @@ app.post('/api/cases/:caseId/evidence', checkCasePermission, async (req, res) =>
             .single();
 
         if (error) {
+            // Log failed upload attempt - Issue #32
+            await auditLoggerService.logAction({
+                actionType: auditLoggerService.ACTION_TYPES.CREATE,
+                evidenceId: null,
+                userId: user.wallet_address || user.id,
+                userRole: user.role,
+                status: auditLoggerService.ACTION_STATUS.FAILURE,
+                details: {
+                    title,
+                    evidenceType,
+                    error: error.message,
+                    fileHash
+                },
+                ipAddress: req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.connection?.remoteAddress,
+                caseId: caseId
+            });
             throw error;
         }
 
-        // Log evidence upload
+        // Log successful evidence upload using centralized audit logger - Issue #32
+        await auditLoggerService.logAction({
+            actionType: auditLoggerService.ACTION_TYPES.CREATE,
+            evidenceId: evidenceId,
+            userId: user.wallet_address || user.id,
+            userRole: user.role,
+            status: auditLoggerService.ACTION_STATUS.SUCCESS,
+            details: {
+                title,
+                description: description?.substring(0, 200), // Truncate for logging
+                evidenceType,
+                fileHash,
+                blockchainTxHash,
+                internalId: newEvidence.id
+            },
+            ipAddress: req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.connection?.remoteAddress,
+            caseId: caseId
+        });
+
+        // Also log to legacy audit_logs table for backward compatibility
         await supabase
             .from('audit_logs')
             .insert({
