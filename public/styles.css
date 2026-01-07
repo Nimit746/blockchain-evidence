@@ -482,13 +482,34 @@ body {
     background: linear-gradient(135deg, #ff6b6b, #ee5a24);
 }
 
-.badge-public { background: #6c757d; }
-.badge-investigator { background: #007bff; }
-.badge-forensic { background: #28a745; }
-.badge-legal { background: #ffc107; color: #212529; }
-.badge-court { background: #17a2b8; }
-.badge-manager { background: #fd7e14; }
-.badge-auditor { background: #6f42c1; }
+.badge-public {
+    background: #6c757d;
+}
+
+.badge-investigator {
+    background: #007bff;
+}
+
+.badge-forensic {
+    background: #28a745;
+}
+
+.badge-legal {
+    background: #ffc107;
+    color: #212529;
+}
+
+.badge-court {
+    background: #17a2b8;
+}
+
+.badge-manager {
+    background: #fd7e14;
+}
+
+.badge-auditor {
+    background: #6f42c1;
+}
 
 /* Login Plan */
 .login-plan-grid {
@@ -510,7 +531,7 @@ body {
 
 .plan-option:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     border-color: var(--primary-red);
 }
 
@@ -778,12 +799,15 @@ body {
         transform: translateY(100vh) rotate(0deg);
         opacity: 0;
     }
+
     10% {
         opacity: 1;
     }
+
     90% {
         opacity: 1;
     }
+
     100% {
         transform: translateY(-100vh) rotate(360deg);
         opacity: 0;
@@ -802,8 +826,13 @@ body {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Documentation Section */
@@ -826,6 +855,12 @@ body {
     transition: all 0.3s ease;
     box-shadow: var(--shadow-light);
     text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
 }
 
 .doc-item:hover {
@@ -948,6 +983,7 @@ body {
     text-align: center;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-light);
+    width: 100%;
 }
 
 .contact-item:hover {
@@ -979,13 +1015,24 @@ body {
 }
 
 .contact-item a {
-    color: var(--primary-red);
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 600;
 }
 
 .contact-item a:hover {
     text-decoration: underline;
+}
+
+.contact-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    height: 100%;
+}
+
+.contact-item-link:hover {
+    text-decoration: none;
 }
 
 /* Contributing Section */
@@ -1350,6 +1397,14 @@ body {
 .status-active {
     color: #2E7D32;
     font-weight: 600;
+}
+
+.doc-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    /* Changed from block to flex to fill height */
+    height: 100%;
 }
 
 /* Responsive Design */

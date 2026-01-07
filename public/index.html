@@ -116,7 +116,7 @@
                 <h2>Connect Wallet</h2>
                 <p>Connect your MetaMask wallet to access the system</p>
             </div>
-            <div class="card-body">
+            <div class="card-body text-center">
                 <button id="connectWallet" class="btn btn-primary pulse">
                     <i data-lucide="link"></i>
                     Connect MetaMask
@@ -302,34 +302,79 @@
                     <p>Complete guide to using the EVID-DGC system</p>
                 </div>
                 <div class="doc-grid">
-                    <div class="doc-item">
-                        <div class="doc-icon">
-                            <i data-lucide="play-circle"></i>
+                    <a href="https://github.com/Gooichand/blockchain-evidence/blob/main/docs/USER_ROLES.md" target="_blank" class="doc-item-link">
+                        <div class="doc-item">
+                            <div class="doc-icon">
+                                <i data-lucide="users"></i>
+                            </div>
+                            <h3>User Roles</h3>
+                            <p>Guide to system roles and permissions</p>
                         </div>
-                        <h3>Quick Start Guide</h3>
-                        <p>Get started with wallet connection and user registration</p>
-                    </div>
-                    <div class="doc-item">
-                        <div class="doc-icon">
-                            <i data-lucide="users"></i>
+                    </a>
+                    <a href="https://github.com/Gooichand/blockchain-evidence/blob/main/docs/TROUBLESHOOTING.md" target="_blank" class="doc-item-link">
+                        <div class="doc-item">
+                            <div class="doc-icon">
+                                <i data-lucide="alert-triangle"></i>
+                            </div>
+                            <h3>Troubleshooting</h3>
+                            <p>Common issues and solutions</p>
                         </div>
-                        <h3>User Roles</h3>
-                        <p>Understanding permissions and access levels for each role</p>
-                    </div>
-                    <div class="doc-item">
+                    </a>
+                    <a href="https://github.com/Gooichand/blockchain-evidence/blob/main/docs/LOCAL_DEVELOPMENT.md" target="_blank" class="doc-item-link">
+                        <div class="doc-item">
+                            <div class="doc-icon">
+                                <i data-lucide="laptop"></i>
+                            </div>
+                            <h3>Local Development</h3>
+                            <p>Setup guide for developers</p>
+                        </div>
+                    </a>
+                    <a href="https://github.com/Gooichand/blockchain-evidence/blob/main/docs/ENVIRONMENT_SETUP.md" target="_blank" class="doc-item-link">
+                        <div class="doc-item">
+                            <div class="doc-icon">
+                                <i data-lucide="settings"></i>
+                            </div>
+                            <h3>Environment Setup</h3>
+                            <p>Configuration and dependencies</p>
+                        </div>
+                    </a>
+                    <a href="https://github.com/Gooichand/blockchain-evidence/blob/main/docs/DEPLOYMENT.md" target="_blank" class="doc-item-link">
+                        <div class="doc-item">
+                            <div class="doc-icon">
+                                <i data-lucide="rocket"></i>
+                            </div>
+                            <h3>Deployment</h3>
+                            <p>Guide to deploying the application</p>
+                        </div>
+                    </a>
+                    <a href="https://github.com/Gooichand/blockchain-evidence/blob/main/docs/BLOCKCHAIN_SETUP.md" target="_blank" class="doc-item-link">
+                        <div class="doc-item">
+                            <div class="doc-icon">
+                                <i data-lucide="link"></i>
+                            </div>
+                            <h3>Blockchain Setup</h3>
+                            <p>Smart contract and chain setup</p>
+                        </div>
+                    </a>
+                    <a href="https://github.com/Gooichand/blockchain-evidence/blob/main/docs/API_DOCUMENTATION.md" target="_blank" class="doc-item-link">
+                        <div class="doc-item">
+                            <div class="doc-icon">
+                                <i data-lucide="file-code"></i>
+                            </div>
+                            <h3>API Documentation</h3>
+                            <p>API endpoints and usage</p>
+                        </div>
+                    </a>
+                    <a href="https://github.com/Gooichand/blockchain-evidence?tab=readme-ov-file#-complete-documentation" target="_blank" class="doc-item-link">
+
+                    <div class="doc-item" onclick="showAlert('Coming soon!', 'info')" style="cursor: pointer;">
                         <div class="doc-icon">
                             <i data-lucide="upload"></i>
                         </div>
                         <h3>Evidence Upload</h3>
-                        <p>Step-by-step guide to uploading and managing evidence</p>
+                        <p>Guide to evidence management</p>
                     </div>
-                    <div class="doc-item">
-                        <div class="doc-icon">
-                            <i data-lucide="settings"></i>
-                        </div>
-                        <h3>API Reference</h3>
-                        <p>Technical documentation for developers and integrations</p>
-                    </div>
+                     </a>
                 </div>
             </div>
         </div>
@@ -355,7 +400,7 @@
                                 <i data-lucide="external-link"></i>
                                 <span>Live Demo</span>
                             </a>
-                            <a href="https://github.com/Gooichand/blockchain-evidence/blob/main/CONTRIBUTING.md" target="_blank" class="project-link">
+                            <a href="https://github.com/Gooichand/blockchain-evidence/blob/main/Contributing.md" target="_blank" class="project-link">
                                 <i data-lucide="book-open"></i>
                                 <span>Contributing Guide</span>
                             </a>
@@ -515,6 +560,60 @@
                             <p>MetaMask is required for wallet-based authentication. Alternatively, you can use email and password authentication for easier access.</p>
                         </div>
                     </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How does the system ensure data integrity?</h3>
+                            <i data-lucide="chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Data integrity is ensured through blockchain hashing, audit logs, role validation, and database-level security (RLS), preventing unauthorized changes.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What is blockchain evidence?</h3>
+                            <i data-lucide="chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Blockchain evidence is digital proof stored using blockchain technology, making it tamper-proof, transparent, and verifiable. Once recorded, it cannot be altered or deleted.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How is evidence verified?</h3>
+                            <i data-lucide="chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Evidence is verified by matching cryptographic hashes stored on the blockchain with uploaded data, ensuring authenticity and originality.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What security measures are in place?</h3>
+                            <i data-lucide="chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The platform uses MetaMask wallet authentication, input sanitization, rate limiting, audit logging, and strict role enforcement for maximum security.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How to get started as a new user?</h3>
+                            <i data-lucide="chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Connect your MetaMask wallet or email, select a role, complete the registration form, and get instant access to your role-specific dashboard.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Who can access the platform?</h3>
+                            <i data-lucide="chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The platform is accessible to authorized users only, based on predefined roles. Each user selects a role during registration and gets access to a role-specific dashboard. Roles include Public Viewer, Investigator, Forensic Analyst, Legal Professional, Court Official, Evidence Manager, Auditor, and Administrator.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -535,22 +634,24 @@
                             <i data-lucide="mail"></i>
                         </div>
                         <h3>Email Support</h3>
-                        <p>support@evid-dgc.com</p>
+                        <p>DGC2MHNE@proton.me</p>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">
                             <i data-lucide="phone"></i>
                         </div>
                         <h3>Phone Support</h3>
-                        <p>+1 (555) 123-4567</p>
+                        <p>+91 9390606393</p>
                     </div>
+                     <a href="https://github.com/Gooichand/blockchain-evidence" target="_blank" class="contact-item-link">
                     <div class="contact-item">
                         <div class="contact-icon">
                             <i data-lucide="github"></i>
                         </div>
                         <h3>GitHub</h3>
-                        <p><a href="https://github.com/Gooichand/blockchain-evidence" target="_blank">View Repository</a></p>
+                       <p>View Repository</p>
                     </div>
+                    </a>
                     <div class="contact-item">
                         <div class="contact-icon">
                             <i data-lucide="map-pin"></i>
