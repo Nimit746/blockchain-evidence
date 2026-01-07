@@ -1125,6 +1125,181 @@ app.get('/api/tags/suggest', async (req, res) => {
     }
 });
 
+// Evidence Integrity Verification API Endpoints
+
+// Verify file integrity against blockchain
+app.post('/api/evidence/verify-integrity', async (req, res) => {
+    try {
+        const { fileName, fileSize, calculatedHash, evidenceId } = req.body;
+
+        let evidence = null;
+        let verified = false;
+        let blockchainHash = null;
+
+        if (evidenceId) {
+            // Verify against specific evidence ID
+            const { data: evidenceData, error } = await supabase
+                .from('evidence')
+                .select('*')
+                .eq('id', evidenceId)
+                .single();
+
+            if (evidenceData) {
+                evidence = evidenceData;
+                blockchainHash = evidenceData.hash;
+                verified = calculatedHash === blockchainHash;
+            }
+        } else {
+            // Search for evidence by hash
+            const { data: evidenceData, error } = await supabase
+                .from('evidence')
+                .select('*')
+                .eq('hash', calculatedHash)
+                .single();
+
+            if (evidenceData) {
+                evidence = evidenceData;
+                blockchainHash = evidenceData.hash;
+                verified = true;
+            }
+        }
+
+        // Log verification attempt
+        await supabase.from('activity_logs').insert({
+            user_id: 'public_verification',
+            action: 'evidence_verification',
+            details: JSON.stringify({
+                fileName,
+                fileSize,
+                calculatedHash: calculatedHash.substring(0, 16) + '...',
+                verified,
+                evidenceId
+            }),
+            timestamp: new Date().toISOString()
+        });
+
+        res.json({
+            success: true,
+            verified,
+            calculatedHash,
+            blockchainHash,
+            evidence,
+            verificationUrl: `${req.protocol}://${req.get('host')}/verify/${calculatedHash}`,
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Verification error:', error);
+        res.status(500).json({ error: 'Verification failed' });
+    }
+});
+
+// Generate verification certificate
+app.post('/api/evidence/verification-certificate', async (req, res) => {
+    try {
+        const { fileName, verificationResult, timestamp } = req.body;
+
+        // Create PDF certificate using jsPDF (simplified)
+        const certificateData = {
+            fileName,
+            verificationResult,
+            timestamp,
+            certificateId: `CERT-${Date.now()}`,
+            issuer: 'EVID-DGC Blockchain Evidence System'
+        };
+
+        // In a real implementation, you would generate an actual PDF
+        const pdfContent = `
+EVIDENCE VERIFICATION CERTIFICATE
+
+Certificate ID: ${certificateData.certificateId}
+File Name: ${fileName}
+Verification Result: ${verificationResult.toUpperCase()}
+Verification Date: ${new Date(timestamp).toLocaleString()}
+Issued By: ${certificateData.issuer}
+
+This certificate confirms the integrity verification of the above evidence file.
+        `;
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="verification_certificate_${fileName}_${Date.now()}.pdf"`);
+        res.send(Buffer.from(pdfContent));
+    } catch (error) {
+        console.error('Certificate generation error:', error);
+        res.status(500).json({ error: 'Failed to generate certificate' });
+    }
+});
+
+// Public verification endpoint (no authentication required)
+app.get('/verify/:hash', async (req, res) => {
+    try {
+        const { hash } = req.params;
+
+        const { data: evidence, error } = await supabase
+            .from('evidence')
+            .select('id, title, case_id, timestamp, submitted_by, hash')
+            .eq('hash', hash)
+            .single();
+
+        if (error || !evidence) {
+            return res.status(404).json({ error: 'Evidence not found' });
+        }
+
+        res.json({
+            success: true,
+            verified: true,
+            evidence: {
+                id: evidence.id,
+                title: evidence.title,
+                case_id: evidence.case_id,
+                timestamp: evidence.timestamp,
+                submitted_by: evidence.submitted_by.substring(0, 8) + '...', // Partial wallet for privacy
+                hash: evidence.hash
+            },
+            verification_timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Public verification error:', error);
+        res.status(500).json({ error: 'Verification failed' });
+    }
+});
+
+// Get verification history (for admin/auditor)
+app.get('/api/evidence/verification-history', async (req, res) => {
+    try {
+        const { userWallet, limit = 100 } = req.query;
+
+        if (!validateWalletAddress(userWallet)) {
+            return res.status(400).json({ error: 'Invalid wallet address' });
+        }
+
+        // Verify user has admin or auditor role
+        const { data: user, error: userError } = await supabase
+            .from('users')
+            .select('role')
+            .eq('wallet_address', userWallet)
+            .eq('is_active', true)
+            .single();
+
+        if (userError || !user || !['admin', 'auditor'].includes(user.role)) {
+            return res.status(403).json({ error: 'Unauthorized: Admin or Auditor role required' });
+        }
+
+        const { data: history, error } = await supabase
+            .from('activity_logs')
+            .select('*')
+            .eq('action', 'evidence_verification')
+            .order('timestamp', { ascending: false })
+            .limit(parseInt(limit));
+
+        if (error) throw error;
+
+        res.json({ success: true, history });
+    } catch (error) {
+        console.error('Verification history error:', error);
+        res.status(500).json({ error: 'Failed to get verification history' });
+    }
+});
+
 // Evidence Comparison API Endpoints
 
 // Get multiple evidence items for comparison
