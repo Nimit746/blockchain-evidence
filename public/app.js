@@ -6,32 +6,33 @@
 let userAccount;
 
 const roleNames = {
-    1: 'Public Viewer', 
-    2: 'Investigator', 
+    1: 'Public Viewer',
+    2: 'Investigator',
     3: 'Forensic Analyst',
-    4: 'Legal Professional', 
-    5: 'Court Official', 
+    4: 'Legal Professional',
+    5: 'Court Official',
     6: 'Evidence Manager',
-    7: 'Auditor', 
+    7: 'Auditor',
     8: 'Administrator'
 };
 
 const roleMapping = {
-    1: 'public_viewer', 
-    2: 'investigator', 
+    1: 'public_viewer',
+    2: 'investigator',
     3: 'forensic_analyst',
-    4: 'legal_professional', 
-    5: 'court_official', 
+    4: 'legal_professional',
+    5: 'court_official',
     6: 'evidence_manager',
-    7: 'auditor', 
+    7: 'auditor',
     8: 'admin'
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeApp();
     initializeLucideIcons();
     initializeNavigation();
     initializeRoleSelection();
+    initializeScrollUp();
 });
 
 function initializeLucideIcons() {
@@ -68,7 +69,7 @@ function initializeNavigation() {
     if (menuToggle && navMenu) {
         menuToggle.addEventListener('click', () => {
             navMenu.classList.toggle('active');
-            
+
             const icon = menuToggle.querySelector('i');
             if (navMenu.classList.contains('active')) {
                 icon.setAttribute('data-lucide', 'x');
@@ -99,6 +100,28 @@ function initializeNavigation() {
     }
 }
 
+
+function initializeScrollUp() {
+    const scrollBtn = document.getElementById('scrollUpBtn');
+
+    if (scrollBtn) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        });
+
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+}
+
 function initializeRoleSelection() {
     const roleCards = document.querySelectorAll('.role-card');
     const userRoleInput = document.getElementById('userRole');
@@ -108,23 +131,23 @@ function initializeRoleSelection() {
         card.addEventListener('click', () => {
             roleCards.forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
-            
+
             const roleValue = parseInt(card.getAttribute('data-role'));
             if (userRoleInput) {
                 userRoleInput.value = roleValue;
             }
-            
+
             if (window.ComprehensiveRegistration && comprehensiveFormContainer) {
                 const formHTML = window.ComprehensiveRegistration.generateRegistrationForm(roleValue);
                 comprehensiveFormContainer.innerHTML = formHTML;
                 comprehensiveFormContainer.classList.remove('hidden');
-                
+
                 if (typeof lucide !== 'undefined') {
                     lucide.createIcons();
                 }
-                
+
                 initializeComprehensiveForm();
-                
+
                 if (userAccount) {
                     const walletField = document.getElementById('walletAddress');
                     if (walletField) {
@@ -139,26 +162,26 @@ function initializeRoleSelection() {
 function initializeComprehensiveForm() {
     const form = document.getElementById('comprehensiveRegistrationForm');
     if (!form) return;
-    
+
     const passwordField = document.getElementById('password');
     if (passwordField) {
         passwordField.addEventListener('input', updatePasswordStrength);
     }
-    
+
     const confirmPasswordField = document.getElementById('confirmPassword');
     if (confirmPasswordField) {
         confirmPasswordField.addEventListener('input', validatePasswordMatch);
     }
-    
+
     const usernameField = document.getElementById('username');
     if (usernameField) {
         usernameField.addEventListener('blur', checkUsernameUniqueness);
     }
-    
+
     if (window.IndianAPIs) {
         window.IndianAPIs.initializeIndianAutocomplete();
     }
-    
+
     form.addEventListener('submit', handleComprehensiveRegistration);
 }
 
@@ -166,18 +189,18 @@ function updatePasswordStrength() {
     const password = document.getElementById('password').value;
     const strengthFill = document.querySelector('.strength-fill');
     const strengthText = document.querySelector('.strength-text');
-    
+
     if (!strengthFill || !strengthText) return;
-    
+
     let strength = 0;
     let strengthLabel = 'Very Weak';
-    
+
     if (password.length >= 8) strength++;
     if (/[a-z]/.test(password)) strength++;
     if (/[A-Z]/.test(password)) strength++;
     if (/[0-9]/.test(password)) strength++;
     if (/[^A-Za-z0-9]/.test(password)) strength++;
-    
+
     strengthFill.className = 'strength-fill';
     switch (strength) {
         case 0:
@@ -199,7 +222,7 @@ function updatePasswordStrength() {
             strengthLabel = 'Strong';
             break;
     }
-    
+
     strengthText.textContent = `Password strength: ${strengthLabel}`;
 }
 
@@ -207,7 +230,7 @@ function validatePasswordMatch() {
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     const confirmField = document.getElementById('confirmPassword');
-    
+
     if (password !== confirmPassword) {
         confirmField.setCustomValidity('Passwords do not match');
     } else {
@@ -218,11 +241,11 @@ function validatePasswordMatch() {
 async function checkUsernameUniqueness() {
     const username = document.getElementById('username').value;
     if (!username) return;
-    
-    const existingUsers = Object.keys(localStorage).filter(key => 
+
+    const existingUsers = Object.keys(localStorage).filter(key =>
         key.startsWith('evidUser_') || key.startsWith('emailUser_')
     );
-    
+
     let isUnique = true;
     for (const userKey of existingUsers) {
         try {
@@ -235,7 +258,7 @@ async function checkUsernameUniqueness() {
             // Ignore parsing errors
         }
     }
-    
+
     const usernameField = document.getElementById('username');
     if (!isUnique) {
         usernameField.setCustomValidity('Username already exists');
@@ -247,17 +270,17 @@ async function checkUsernameUniqueness() {
 
 async function handleComprehensiveRegistration(event) {
     event.preventDefault();
-    
+
     try {
         showLoading(true, 'Processing registration...');
-        
+
         const formData = collectFormData();
-        
+
         if (!validateFormData(formData)) {
             showLoading(false);
             return;
         }
-        
+
         const userData = {
             ...formData,
             isRegistered: true,
@@ -266,18 +289,18 @@ async function handleComprehensiveRegistration(event) {
             verificationStatus: 'pending',
             accountType: 'comprehensive'
         };
-        
+
         const userKey = userAccount ? 'evidUser_' + userAccount : 'emailUser_' + formData.email;
         localStorage.setItem(userKey, JSON.stringify(userData));
         localStorage.setItem('currentUser', userAccount || 'email_' + formData.email);
-        
+
         showLoading(false);
         showAlert('Registration submitted successfully!', 'success');
-        
+
         setTimeout(() => {
             window.location.href = 'dashboard.html';
         }, 2000);
-        
+
     } catch (error) {
         console.error('Registration failed:', error);
         showLoading(false);
@@ -288,7 +311,7 @@ async function handleComprehensiveRegistration(event) {
 function collectFormData() {
     const formData = {};
     const form = document.getElementById('comprehensiveRegistrationForm');
-    
+
     const inputs = form.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
         if (input.type === 'checkbox') {
@@ -302,37 +325,37 @@ function collectFormData() {
             formData[input.id] = input.value;
         }
     });
-    
+
     return formData;
 }
 
 function validateFormData(formData) {
     const requiredFields = ['firstName', 'lastName', 'email', 'username', 'password'];
-    
+
     for (const field of requiredFields) {
         if (!formData[field]) {
             showAlert(`${field.replace(/([A-Z])/g, ' $1').toLowerCase()} is required.`, 'error');
             return false;
         }
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
         showAlert('Passwords do not match.', 'error');
         return false;
     }
-    
+
     if (!formData.termsAccepted || !formData.privacyAccepted) {
         showAlert('You must accept the Terms & Conditions and Privacy Policy.', 'error');
         return false;
     }
-    
+
     return true;
 }
 
 async function connectWallet() {
     try {
         showLoading(true);
-        
+
         const loader = document.getElementById('loader');
         if (loader) loader.classList.remove('hidden');
 
@@ -346,12 +369,12 @@ async function connectWallet() {
             return;
         }
 
-        const accounts = await window.ethereum.request({ 
-            method: 'eth_requestAccounts' 
+        const accounts = await window.ethereum.request({
+            method: 'eth_requestAccounts'
         });
-        
+
         userAccount = accounts[0];
-        
+
         if (userAccount.toLowerCase() === '0x29bb7718d5c6da6e787deae8fd6bb3459e8539f2'.toLowerCase()) {
             const adminData = {
                 fullName: 'Administrator',
@@ -365,23 +388,23 @@ async function connectWallet() {
                 walletAddress: userAccount,
                 accountType: 'admin'
             };
-            
+
             localStorage.setItem('evidUser_' + userAccount, JSON.stringify(adminData));
             localStorage.setItem('currentUser', userAccount);
-            
+
             displayAdminOptions(adminData);
             toggleSections('adminOptions');
             showLoading(false);
             hideConnectionLoader();
             return;
         }
-        
+
         updateWalletUI();
         await checkRegistrationStatus();
-        
+
         showLoading(false);
         hideConnectionLoader();
-        
+
     } catch (error) {
         console.error('Wallet connection failed:', error);
         showLoading(false);
@@ -403,11 +426,11 @@ function updateWalletUI() {
     if (walletAddr) {
         walletAddr.textContent = userAccount;
     }
-    
+
     if (walletStatus) {
         walletStatus.classList.remove('hidden');
     }
-    
+
     if (connectBtn) {
         connectBtn.innerHTML = '<i data-lucide="check"></i> Connected';
         connectBtn.disabled = true;
@@ -418,7 +441,7 @@ function updateWalletUI() {
 
 async function checkRegistrationStatus() {
     const savedUser = localStorage.getItem('evidUser_' + userAccount);
-    
+
     if (savedUser) {
         const userData = JSON.parse(savedUser);
         displayUserInfo(userData);
@@ -445,7 +468,7 @@ function displayAdminOptions(userData) {
     if (userName) {
         userName.textContent = userData.fullName || 'Administrator';
     }
-    
+
     if (userRoleName) {
         userRoleName.textContent = 'Administrator';
     }
@@ -462,10 +485,10 @@ function displayUserInfo(userData) {
     if (userName) {
         userName.textContent = userData.fullName || 'User';
     }
-    
+
     if (userRoleName) {
-        const roleName = typeof userData.role === 'number' 
-            ? roleNames[userData.role] 
+        const roleName = typeof userData.role === 'number'
+            ? roleNames[userData.role]
             : userData.role.replace('_', ' ').toUpperCase();
         userRoleName.textContent = roleName;
     }
@@ -473,7 +496,7 @@ function displayUserInfo(userData) {
 
 function toggleSections(active) {
     const sections = ['wallet', 'registration', 'alreadyRegistered', 'adminOptions'];
-    
+
     sections.forEach(id => {
         const element = document.getElementById(id + 'Section');
         if (element) {
@@ -484,7 +507,7 @@ function toggleSections(active) {
 
 async function handleRegistration(event) {
     event.preventDefault();
-    
+
     try {
         const role = parseInt(document.getElementById('userRole')?.value);
         const fullName = document.getElementById('fullName')?.value;
@@ -512,11 +535,11 @@ async function handleRegistration(event) {
         localStorage.setItem('currentUser', userAccount);
 
         showAlert('Registration successful! Redirecting to dashboard...', 'success');
-        
+
         setTimeout(() => {
             window.location.href = 'dashboard.html';
         }, 2000);
-        
+
     } catch (error) {
         console.error('Registration failed:', error);
         showAlert('Registration failed. Please try again.', 'error');
@@ -529,25 +552,25 @@ async function goToDashboard() {
 
 function getUserRole() {
     if (!userAccount) return null;
-    
+
     const savedUser = localStorage.getItem('evidUser_' + userAccount);
     if (savedUser) {
         const userData = JSON.parse(savedUser);
-        return typeof userData.role === 'number' 
-            ? roleNames[userData.role] 
+        return typeof userData.role === 'number'
+            ? roleNames[userData.role]
             : userData.role;
     }
-    
+
     return null;
 }
 
 function logout() {
     localStorage.clear();
     userAccount = null;
-    
+
     const walletStatus = document.getElementById('walletStatus');
     const connectBtn = document.getElementById('connectWallet');
-    
+
     if (walletStatus) walletStatus.classList.add('hidden');
     if (connectBtn) {
         connectBtn.innerHTML = '<i data-lucide="link"></i> Connect MetaMask';
@@ -555,32 +578,32 @@ function logout() {
         connectBtn.classList.remove('btn-success');
         lucide.createIcons();
     }
-    
+
     toggleSections('wallet');
     showAlert('Logged out successfully', 'info');
 }
 
 function disconnectWallet() {
     userAccount = null;
-    
+
     const walletStatus = document.getElementById('walletStatus');
     const walletSection = document.getElementById('walletSection');
     const registrationSection = document.getElementById('registrationSection');
     const alreadyRegisteredSection = document.getElementById('alreadyRegisteredSection');
     const connectBtn = document.getElementById('connectWallet');
-    
+
     if (walletStatus) walletStatus.classList.add('hidden');
     if (walletSection) walletSection.classList.remove('hidden');
     if (registrationSection) registrationSection.classList.add('hidden');
     if (alreadyRegisteredSection) alreadyRegisteredSection.classList.add('hidden');
-    
+
     if (connectBtn) {
         connectBtn.innerHTML = '<i data-lucide="link"></i> Connect MetaMask';
         connectBtn.disabled = false;
         connectBtn.classList.remove('btn-success');
         lucide.createIcons();
     }
-    
+
     showAlert('Wallet disconnected successfully', 'info');
 }
 
@@ -594,7 +617,7 @@ function showLoading(show) {
 function showAlert(message, type = 'info') {
     const existingAlerts = document.querySelectorAll('.alert');
     existingAlerts.forEach(alert => alert.remove());
-    
+
     const alert = document.createElement('div');
     alert.className = `alert alert-${type}`;
     alert.innerHTML = `
@@ -603,17 +626,17 @@ function showAlert(message, type = 'info') {
             <span>${message}</span>
         </div>
     `;
-    
+
     document.body.appendChild(alert);
-    
+
     lucide.createIcons();
-    
+
     setTimeout(() => {
         if (alert.parentNode) {
             alert.remove();
         }
     }, 5000);
-    
+
     alert.addEventListener('click', () => {
         alert.remove();
     });
@@ -632,7 +655,7 @@ function getAlertIcon(type) {
 function scrollToSection(sectionId) {
     const element = document.getElementById(sectionId);
     if (element) {
-        element.scrollIntoView({ 
+        element.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
         });
@@ -647,7 +670,7 @@ if (window.ethereum) {
             location.reload();
         }
     });
-    
+
     window.ethereum.on('chainChanged', () => {
         location.reload();
     });
