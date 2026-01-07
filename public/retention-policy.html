@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidence Retention Policy - EVID-DGC</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .retention-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .policy-card { background: white; border-radius: 8px; padding: 20px; margin: 10px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .expiry-warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 10px; margin: 10px 0; }
+        .legal-hold { background: #fecaca; border-left: 4px solid #ef4444; }
+        .retention-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .evidence-list { max-height: 400px; overflow-y: auto; }
+        .status-expired { color: #ef4444; font-weight: bold; }
+        .status-warning { color: #f59e0b; font-weight: bold; }
+        .status-active { color: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="retention-container">
+        <h1>📅 Evidence Retention Policy Management</h1>
+        
+        <!-- Policy Management Section -->
+        <div class="policy-card">
+            <h2>Retention Policies</h2>
+            <button onclick="showCreatePolicyModal()" class="btn btn-primary">Create New Policy</button>
+            <div id="policiesList"></div>
+        </div>
+
+        <!-- Evidence Expiry Monitoring -->
+        <div class="policy-card">
+            <h2>Evidence Expiry Monitoring</h2>
+            <div class="filter-controls">
+                <select id="expiryFilter">
+                    <option value="all">All Evidence</option>
+                    <option value="expired">Expired</option>
+                    <option value="30days">Expiring in 30 days</option>
+                    <option value="7days">Expiring in 7 days</option>
+                    <option value="legal_hold">Legal Hold</option>
+                </select>
+                <button onclick="loadEvidenceExpiry()" class="btn btn-secondary">Refresh</button>
+            </div>
+            <div id="evidenceExpiryList" class="evidence-list"></div>
+        </div>
+
+        <!-- Bulk Operations -->
+        <div class="policy-card">
+            <h2>Bulk Operations</h2>
+            <div class="bulk-controls">
+                <button onclick="showBulkPolicyModal()" class="btn btn-primary">Apply Policy to Multiple Evidence</button>
+                <button onclick="showBulkLegalHoldModal()" class="btn btn-warning">Bulk Legal Hold</button>
+                <button onclick="generateRetentionReport()" class="btn btn-secondary">Generate Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Policy Modal -->
+    <div id="createPolicyModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Create Retention Policy</h3>
+            <form id="policyForm" class="retention-form">
+                <input type="text" id="policyName" placeholder="Policy Name" required>
+                <select id="caseType" required>
+                    <option value="">Select Case Type</option>
+                    <option value="criminal_major">Criminal - Major</option>
+                    <option value="criminal_minor">Criminal - Minor</option>
+                    <option value="civil">Civil</option>
+                    <option value="administrative">Administrative</option>
+                    <option value="child_welfare">Child Welfare</option>
+                    <option value="gdpr_personal">GDPR Personal Data</option>
+                </select>
+                <input type="number" id="retentionDays" placeholder="Retention Days" required>
+                <select id="archiveMethod">
+                    <option value="delete">Delete</option>
+                    <option value="archive">Archive</option>
+                </select>
+                <input type="text" id="jurisdiction" placeholder="Jurisdiction">
+                <input type="text" id="lawReference" placeholder="Law Reference">
+            </form>
+            <div class="modal-actions">
+                <button onclick="createRetentionPolicy()" class="btn btn-primary">Create Policy</button>
+                <button onclick="closeModal('createPolicyModal')" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Policy Modal -->
+    <div id="bulkPolicyModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Apply Retention Policy</h3>
+            <select id="bulkPolicySelect"></select>
+            <textarea id="evidenceIds" placeholder="Evidence IDs (comma-separated)"></textarea>
+            <div class="modal-actions">
+                <button onclick="applyBulkPolicy()" class="btn btn-primary">Apply Policy</button>
+                <button onclick="closeModal('bulkPolicyModal')" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="retention-policy.js"></script>
+</body>
+</html>
