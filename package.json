@@ -6,48 +6,110 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "frontend": "cd public && python -m http.server 8080"
+    "frontend": "cd public && python -m http.server 8080",
+    "test": "node tests/ComprehensiveTestRunner.js",
+    "test:forensic": "node tests/ComprehensiveTestRunner.js --no-load",
+    "test:load": "node tests/ComprehensiveTestRunner.js --no-forensic",
+    "test:load:light": "node tests/ComprehensiveTestRunner.js --no-forensic --load-level=light",
+    "test:load:heavy": "node tests/ComprehensiveTestRunner.js --no-forensic --load-level=heavy",
+    "test:load:stress": "node tests/ComprehensiveTestRunner.js --no-forensic --load-level=stress",
+    "test:headed": "node tests/ComprehensiveTestRunner.js --headed",
+    "test:ci": "node tests/ComprehensiveTestRunner.js --no-report"
   },
   "keywords": [
     "blockchain",
     "evidence",
     "admin",
     "security",
-    "supabase"
+    "supabase",
+    "forensics",
+    "c2pa",
+    "deepfake-detection",
+    "rbac",
+    "abac"
   ],
   "author": "EVID-DGC Team",
   "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
     "archiver": "^6.0.1",
+    "bull": "^4.12.2",
     "color-hash": "^2.0.2",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "date-fns": "^2.30.0",
     "dotenv": "^17.2.3",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
-    "jspdf": "^4.0.0",
-    "multer": "^2.0.2",
     "fuse.js": "^7.1.0",
+    "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
     "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.3",
+    "numeral": "^2.0.6",
     "pdf-lib": "^1.17.1",
+    "qrcode": "^1.5.3",
+    "react-chrono": "^2.6.1",
     "sharp": "^0.33.2",
     "socket.io": "^4.7.5",
-    "node-cron": "^3.0.3",
-    "date-fns": "^2.30.0",
-    "bull": "^4.12.2",
-    "qrcode": "^1.5.3",
-    "crypto": "^1.0.1",
-    "vis-timeline": "^7.7.3",
-    "react-chrono": "^2.6.1",
-    "html2canvas": "^1.4.1",
-    "numeral": "^2.0.6"
+    "vis-timeline": "^7.7.3"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "@playwright/test": "^1.40.0",
+    "playwright": "^1.40.0",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "lib/**/*.js",
+      "server.js",
+      "!lib/**/*.test.js"
+    ]
+  },
+  "playwright": {
+    "testDir": "./tests/e2e",
+    "timeout": 30000,
+    "expect": {
+      "timeout": 5000
+    },
+    "fullyParallel": true,
+    "forbidOnly": true,
+    "retries": 2,
+    "workers": 4,
+    "reporter": "html",
+    "use": {
+      "baseURL": "http://localhost:3000",
+      "trace": "on-first-retry"
+    },
+    "projects": [
+      {
+        "name": "chromium",
+        "use": {
+          "...devices['Desktop Chrome']"
+        }
+      },
+      {
+        "name": "firefox",
+        "use": {
+          "...devices['Desktop Firefox']"
+        }
+      },
+      {
+        "name": "webkit",
+        "use": {
+          "...devices['Desktop Safari']"
+        }
+      }
+    ]
   }
 }
