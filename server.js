@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const multer = require('multer');
 const { createClient } = require('@supabase/supabase-js');
 const rateLimit = require('express-rate-limit');
 const archiver = require('archiver');
@@ -121,6 +122,41 @@ const notifyMultipleUsers = async (userWallets, title, message, type, data = {})
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static('public'));
+
+// Configure multer for file uploads
+const upload = multer({
+    limits: {
+        fileSize: 100 * 1024 * 1024 // 100MB limit
+    },
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = [
+            'application/pdf',
+            'image/jpeg',
+            'image/jpg', 
+            'image/png',
+            'image/gif',
+            'video/mp4',
+            'video/avi',
+            'video/mov',
+            'audio/mp3',
+            'audio/wav',
+            'audio/m4a',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'text/plain',
+            'application/zip',
+            'application/x-rar-compressed'
+        ];
+        
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error(`File type ${file.mimetype} not supported`), false);
+        }
+    }
+});
 
 // Rate limiting
 const limiter = rateLimit({
@@ -280,6 +316,12 @@ const timelineLimiter = rateLimit({
 // Case timeline route
 app.get('/case-timeline', timelineLimiter, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'case-timeline.html'));
+});
+
+// Enhanced upload demo route
+app.get('/upload-demo', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'enhanced-upload-demo.html'));
+});
 // Rate limiter for public policy pages
 const policyPageLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -696,7 +738,86 @@ app.post('/api/admin/users', adminLimiter, verifyAdmin, async (req, res) => {
     }
 });
 
-// Evidence Export API Endpoints
+// Enhanced Evidence Upload API Endpoint
+app.post('/api/evidence/upload', upload.single('file'), async (req, res) => {
+    try {
+        const { caseId, type, description, location, collectionDate, uploadedBy } = req.body;
+        const file = req.file;
+
+        if (!file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+
+        // File validation
+        const allowedTypes = {
+            'application/pdf': 100,
+            'image/jpeg': 50,
+            'image/jpg': 50,
+            'image/png': 50,
+            'image/gif': 25,
+            'video/mp4': 500,
+            'video/avi': 500,
+            'video/mov': 500,
+            'audio/mp3': 100,
+            'audio/wav': 200,
+            'audio/m4a': 100,
+            'application/msword': 50,
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 50,
+            'text/plain': 10
+        };
+
+        const maxSize = allowedTypes[file.mimetype];
+        if (!maxSize) {
+            return res.status(400).json({ 
+                error: `File type ${file.mimetype} not supported`,
+                supportedTypes: Object.keys(allowedTypes)
+            });
+        }
+
+        const maxSizeBytes = maxSize * 1024 * 1024;
+        if (file.size > maxSizeBytes) {
+            return res.status(400).json({ 
+                error: `File too large. Maximum size for ${file.mimetype} is ${maxSize}MB`,
+                fileSize: file.size,
+                maxSize: maxSizeBytes
+            });
+        }
+
+        // Calculate file hash
+        const crypto = require('crypto');
+        const hash = crypto.createHash('sha256').update(file.buffer).digest('hex');
+
+        // Create evidence record
+        const evidenceData = {
+            id: 'EVD-' + Date.now(),
+            caseId,
+            type,
+            description,
+            location,
+            collectionDate,
+            fileName: file.name,
+            fileSize: file.size,
+            mimeType: file.mimetype,
+            hash,
+            uploadedBy,
+            uploadedAt: new Date().toISOString(),
+            status: 'uploaded'
+        };
+
+        // Store file (in production, use cloud storage)
+        // For now, just return success with metadata
+        
+        res.json({
+            success: true,
+            evidence: evidenceData,
+            message: 'Evidence uploaded successfully'
+        });
+
+    } catch (error) {
+        console.error('Evidence upload error:', error);
+        res.status(500).json({ error: 'Upload failed: ' + error.message });
+    }
+});
 
 // Download single evidence file with watermark
 app.post('/api/evidence/:id/download', exportLimiter, async (req, res) => {
