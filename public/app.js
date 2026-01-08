@@ -329,6 +329,16 @@ function collectFormData() {
     return formData;
 }
 
+/**
+ * Validate registration form values and show the first relevant error alert if validation fails.
+ *
+ * Checks that required fields (firstName, lastName, email, username, password) are present, that
+ * password matches confirmPassword, and that termsAccepted and privacyAccepted are true. If a
+ * validation rule fails the function shows an error alert describing the first failure.
+ *
+ * @param {Object} formData - Collected registration form values (expected keys include `firstName`, `lastName`, `email`, `username`, `password`, `confirmPassword`, `termsAccepted`, `privacyAccepted`).
+ * @returns {boolean} `true` if all validations pass, `false` otherwise.
+ */
 function validateFormData(formData) {
     const requiredFields = ['firstName', 'lastName', 'email', 'username', 'password'];
 
@@ -352,18 +362,50 @@ function validateFormData(formData) {
     return true;
 }
 
+/**
+ * Connects the user's Ethereum wallet, updates the UI, and checks or creates the user's registration state.
+ *
+ * Performs network and provider availability checks, handles a demo fallback, prompts to install MetaMask if absent,
+ * requests account access, enforces the configured target network, handles a special admin wallet shortcut,
+ * updates the wallet display, and launches the registration status flow. Displays contextual error modals for
+ * common wallet/provider failures.
+ */
 async function connectWallet() {
+    closeErrorModal();
+
+    if (!navigator.onLine) {
+        showErrorModal('No Internet Connection', 'Please check your network settings and try again.');
+        return;
+    }
+
     try {
         showLoading(true);
-
         const loader = document.getElementById('loader');
         if (loader) loader.classList.remove('hidden');
 
         if (!window.ethereum) {
-            userAccount = '0x1234567890123456789012345678901234567890';
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            updateWalletUI();
-            await checkRegistrationStatus();
+            if (config.DEMO_MODE) {
+                userAccount = '0x1234567890123456789012345678901234567890';
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                updateWalletUI();
+                await checkRegistrationStatus();
+                showLoading(false);
+                hideConnectionLoader();
+                return;
+            }
+
+            showLoading(false);
+            hideConnectionLoader();
+            showErrorModal(
+                'MetaMask Not Found',
+                'MetaMask is not installed. Please install it to use this application.',
+                'Install MetaMask',
+                () => window.open('https://metamask.io/download/', '_blank')
+            );
+            return;
+        }
+
+        if (config.TARGET_CHAIN_ID && !(await checkNetwork())) {
             showLoading(false);
             hideConnectionLoader();
             return;
@@ -372,6 +414,13 @@ async function connectWallet() {
         const accounts = await window.ethereum.request({
             method: 'eth_requestAccounts'
         });
+
+        if (accounts.length === 0) {
+            showLoading(false);
+            hideConnectionLoader();
+            showErrorModal('Account Access Required', 'Please unlock your MetaMask wallet and select an account.');
+            return;
+        }
 
         userAccount = accounts[0];
 
@@ -406,10 +455,23 @@ async function connectWallet() {
         hideConnectionLoader();
 
     } catch (error) {
-        console.error('Wallet connection failed:', error);
         showLoading(false);
         hideConnectionLoader();
-        showAlert('Wallet connection failed. Please try again.', 'error');
+        console.error('Wallet connection error:', error);
+
+        if (error.code === 4001) {
+            showErrorModal('Connection Rejected', 'You rejected the connection request. This app requires a wallet connection to function.', 'Try Again', connectWallet);
+        } else if (error.code === 4100) {
+            showErrorModal('Unauthorized', 'The requested method and/or account has not been authorized by the user. Please check your MetaMask settings.');
+        } else if (error.code === 4900) {
+            showErrorModal('Disconnected', 'The connection to the blockchain has been lost. Please check your internet connection or MetaMask status.');
+        } else if (error.code === -32002) {
+            showErrorModal('Check MetaMask', 'A connection request is already pending. Please check your MetaMask extension popups.');
+        } else if (error.code === -32603) {
+            showErrorModal('Internal Error', 'MetaMask encountered an internal error. Please try resetting your MetaMask account or restarting the browser.');
+        } else {
+            showErrorModal('Connection Failed', error.message || 'An unexpected error occurred.');
+        }
     }
 }
 
@@ -652,6 +714,10 @@ function getAlertIcon(type) {
     return icons[type] || 'info';
 }
 
+/**
+ * Scrolls the page smoothly to the element with the given ID.
+ * @param {string} sectionId - The ID of the target DOM element; does nothing if no element with that ID exists.
+ */
 function scrollToSection(sectionId) {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -660,6 +726,90 @@ function scrollToSection(sectionId) {
             block: 'start'
         });
     }
+}
+
+/**
+ * Display an error modal with a title, HTML description, and an optional action button.
+ *
+ * If the expected modal elements exist in the DOM, the function populates the title and
+ * description, shows or hides the action button based on `actionText`/`actionCallback`,
+ * and activates the modal. If modal elements are missing, falls back to calling
+ * `showAlert` with a combined error message.
+ *
+ * @param {string} title - The modal title text.
+ * @param {string} description - The modal description; may include HTML.
+ * @param {string|null} [actionText=null] - Text for the optional action button; when null the button is hidden.
+ * @param {Function|null} [actionCallback=null] - Callback invoked when the action button is clicked.
+ */
+function showErrorModal(title, description, actionText = null, actionCallback = null) {
+    const modal = document.getElementById('errorModal');
+    const titleEl = document.getElementById('errorTitle');
+    const descEl = document.getElementById('errorDescription');
+    const actionBtn = document.getElementById('errorActionBtn');
+
+    if (modal && titleEl && descEl) {
+        titleEl.textContent = title;
+        descEl.innerHTML = description;
+
+        if (actionText && actionCallback) {
+            actionBtn.textContent = actionText;
+            actionBtn.onclick = actionCallback;
+            actionBtn.classList.remove('hidden');
+        } else {
+            actionBtn.classList.add('hidden');
+        }
+        modal.classList.add('active');
+    } else {
+        showAlert(`${title}: ${description}`, 'error');
+    }
+}
+
+/**
+ * Closes the error modal if it exists in the DOM.
+ *
+ * Locates the element with id "errorModal" and removes its "active" class to hide it.
+ */
+function closeErrorModal() {
+    const modal = document.getElementById('errorModal');
+    if (modal) modal.classList.remove('active');
+}
+
+/**
+ * Ensure the connected wallet is on the configured target network.
+ *
+ * If no Ethereum provider is present or the wallet's chain ID does not match the configured TARGET_CHAIN_ID,
+ * a modal is shown prompting the user to switch networks and offering an action that attempts to switch the wallet's chain.
+ * If the switch action fails or the network is not available in the wallet, appropriate error modals are displayed.
+ *
+ * @returns {Promise<boolean>} `true` if the wallet is on the target network, `false` otherwise.
+ */
+async function checkNetwork() {
+    if (!window.ethereum) return false;
+    const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+    if (currentChainId.toLowerCase() !== config.TARGET_CHAIN_ID.toLowerCase()) {
+        showErrorModal(
+            'Wrong Network',
+            `Please switch your wallet to <strong>${config.NETWORK_NAME}</strong> to continue.`,
+            `Switch to ${config.NETWORK_NAME}`,
+            async () => {
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: config.TARGET_CHAIN_ID }],
+                    });
+                    closeErrorModal();
+                } catch (switchError) {
+                    if (switchError.code === 4902) {
+                        showErrorModal('Network Not Found', `The ${config.NETWORK_NAME} is not added to your MetaMask. Please add it manually.`);
+                    } else {
+                        showErrorModal('Switch Failed', 'Failed to switch network. Please try explicitly from your wallet.');
+                    }
+                }
+            }
+        );
+        return false;
+    }
+    return true;
 }
 
 if (window.ethereum) {
