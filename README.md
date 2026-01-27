@@ -511,8 +511,85 @@ We value your feedback! If you have suggestions for new features or have found a
 
 ---
 
-## 🤝 Contribution Guidelines
-Contributions are welcome! Please read our [Contributing.md](Contributing.md) for details on our code of conduct and the process for submitting pull requests.
+## 🤝 Contributing
+
+We welcome contributions from developers, security researchers, legal professionals, and anyone passionate about improving digital evidence management!
+
+### 🚀 Quick Start for Contributors
+
+1. **Fork the repository** and clone it locally
+2. **Read our [Contributing Guide](CONTRIBUTING.md)** for detailed instructions
+3. **Check out [open issues](https://github.com/Gooichand/blockchain-evidence/issues)** for ways to help
+4. **Join the discussion** in GitHub Discussions
+
+### 🎯 Ways to Contribute
+
+- 🐛 **Bug Reports**: Found an issue? Let us know!
+- 💡 **Feature Requests**: Have ideas for improvements?
+- 🔧 **Code Contributions**: Fix bugs or add new features
+- 📚 **Documentation**: Help improve our guides and docs
+- 🎨 **Design & UX**: Enhance the user interface
+- 🧪 **Testing**: Help us test new features
+- 🌐 **Localization**: Translate the app to other languages
+
+### 📋 Contribution Process
+
+1. **Choose an issue** or propose a new feature
+2. **Fork and create a branch** for your changes
+3. **Make your changes** following our coding standards
+4. **Test thoroughly** and add documentation
+5. **Submit a pull request** with a clear description
+
+For detailed guidelines, see our **[Contributing Guide](CONTRIBUTING.md)**.
+
+---
+
+## 👥 Contributors
+
+Thanks to all the amazing people who have contributed to EVID-DGC! 🎉
+
+### 🏆 Core Team
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Gooichand">
+        <img src="https://github.com/Gooichand.png" width="100px;" alt="Gooichand"/><br />
+        <sub><b>Gooichand</b></sub>
+      </a><br />
+      <sub>🚀 Project Lead & Core Developer</sub>
+    </td>
+  </tr>
+</table>
+
+### 🌟 All Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+**Want to see your name here?** Check out our [Contributing Guide](CONTRIBUTING.md) and start contributing today!
+
+### 🎖️ Recognition
+
+We recognize contributors in multiple ways:
+- **README Contributors Section** (above)
+- **Release Notes** for significant contributions  
+- **GitHub Contributors Page** automatic recognition
+- **Special Mentions** in project updates and social media
+
+### 💝 How to Get Involved
+
+- **Star the repository** ⭐ to show your support
+- **Watch the repository** 👀 to stay updated
+- **Fork and contribute** 🍴 to help improve the project
+- **Share with others** 📢 who might be interested
+- **Join discussions** 💬 in GitHub Issues and Discussions
 
 ---
 

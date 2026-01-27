@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "setup": "node contributor-setup.js",
+    "contributor-setup": "node contributor-setup.js --contributor",
+    "health": "curl http://localhost:3000/api/health || echo 'Server not running'",
     "lint": "echo 'Linting not configured'",
     "build": "echo 'Build not required for this project'"
   },
