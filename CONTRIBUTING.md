@@ -1,6 +1,5 @@
 # 🤝 Contributing to EVID-DGC
-**Check this for your contribute certificates** 
-https://evid-dgc-certificates.onrender.com/
+
 
 **To know understand how EVID-DGC works see this Youtube video**
 
