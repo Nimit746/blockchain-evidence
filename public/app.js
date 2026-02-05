@@ -1,3 +1,21 @@
+//lenis-smooth-scroll
+const lenis = new Lenis({
+    smooth: true,
+    lerp: 0.08,
+    wheelMultiplier: 1,
+    touchMultiplier: 1,
+});
+
+function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+}
+
+requestAnimationFrame(raf);
+
+
+
+
 let userAccount;
 
 // Initialize application
@@ -40,19 +58,13 @@ function initializeApp() {
 
 // Navigation functions
 function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
+    lenis.scrollTo(0);
 }
 
 function scrollToSection(sectionId) {
     const element = document.getElementById(sectionId);
     if (element) {
-        element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
+        lenis.scrollTo(element);
     }
 }
 
