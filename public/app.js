@@ -86,7 +86,7 @@ function scrollToSection(sectionId) {
     if(lenis){
         lenis.scrollTo(element);
     }else{
-        element.scrollIntoView({behavior:smooth,block:"start"})
+        element.scrollIntoView({behavior:"smooth",block:"start"})
     }
   }
 }
