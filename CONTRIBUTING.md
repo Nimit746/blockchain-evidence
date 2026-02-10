@@ -25,6 +25,7 @@ Thank you for your interest in contributing to EVID-DGC! We welcome contribution
 - [🐛 Bug Reports](#-bug-reports)
 - [💡 Feature Requests](#-feature-requests)
 - [🔒 Security Issues](#-security-issues)
+- [🆘 Common Setup Issues](#-common-setup-issues)
 - [📞 Getting Help](#-getting-help)
 
 ## 🚀 Quick Start
@@ -35,15 +36,18 @@ Thank you for your interest in contributing to EVID-DGC! We welcome contribution
    git clone https://github.com/YOUR-USERNAME/blockchain-evidence.git
    cd blockchain-evidence
    ```
+
 3. **Install dependencies**:
    ```bash
    npm install
    ```
+
 4. **Set up environment**:
    ```bash
    cp .env.example .env
-   # Edit .env with your Supabase credentials
+   # ⚠️ IMPORTANT: Edit .env with your Supabase credentials (see detailed steps below)
    ```
+
 5. **Start development server**:
    ```bash
    npm run dev
@@ -61,25 +65,88 @@ Thank you for your interest in contributing to EVID-DGC! We welcome contribution
 
 ### Environment Configuration
 
-1. **Create Supabase Project**:
-   - Go to [Supabase Dashboard](https://app.supabase.com/)
-   - Create a new project
-   - Copy your project URL and anon key
+#### Step 1: Create Supabase Project
 
-2. **Configure Environment**:
+1. **Go to Supabase Dashboard**:
+   - Navigate to [https://app.supabase.com/](https://app.supabase.com/)
+   - Sign in or create a free account
+
+2. **Create a New Project**:
+   - Click **"New Project"** button
+   - Fill in project details (name, password, region)
+   - Click **"Create new project"**
+   - Wait 2-3 minutes for initialization
+
+#### Step 2: Get Your Supabase Credentials
+
+**⚠️ CRITICAL: Use the correct API key**
+
+1. **Navigate to Project Settings**:
+   - In your Supabase project dashboard
+   - Click **Settings** icon (⚙️) in the left sidebar
+   - Select **API** from the settings menu
+
+2. **Copy Your Project URL**:
+   - Under "Project URL" section
+   - Copy the URL (format: `https://xxxxx.supabase.co`)
+   - This is your `SUPABASE_URL`
+
+3. **Copy Your API Key** (ANON PUBLIC Key):
+   - Scroll to "Project API keys" section
+   - You'll see two keys:
+     - **`anon` `public`** ← ✅ **USE THIS ONE**
+     - **`service_role` `secret`** ← ❌ **DO NOT USE**
+   - Click the copy icon next to the **anon public** key
+   - This is your `SUPABASE_KEY`
+
+   > **Why anon key?** The anon (public) key is safe for client-side use and has proper security restrictions. The service_role key has full database access and should never be used in client applications.
+
+#### Step 3: Configure Environment File
+
+**⚠️ FILE NAMING CRITICAL**
+
+Your environment file **MUST** be named exactly `.env` (with a leading dot). Common mistakes:
+- ❌ `env` (missing dot)
+- ❌ `env.txt` (wrong extension)
+- ❌ `.env.txt` (wrong extension)
+- ✅ `.env` (correct)
+
+1. **Create your environment file**:
    ```bash
-   # Copy example environment file
    cp .env.example .env
-   
-   # Edit .env with your credentials
-   SUPABASE_URL=your_supabase_project_url
-   SUPABASE_KEY=your_supabase_anon_key
    ```
 
-3. **Set up Database**:
-   - Open Supabase SQL Editor
-   - Run `complete-database-setup.sql`
-   - Verify tables are created
+2. **Edit the .env file**:
+   - Open `.env` in your code editor
+   - Replace placeholder values with your actual credentials:
+   
+   ```bash
+   # Replace with your actual Project URL from Step 2
+   SUPABASE_URL=https://xxxxx.supabase.co
+   
+   # Replace with your actual anon public key from Step 2
+   SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   ```
+   
+   > **Note**: The anon key is very long (200+ characters). Make sure you copy the entire string.
+
+3. **Save the file** in the project root directory
+
+#### Step 4: Set up Database
+
+1. **Open Supabase SQL Editor**:
+   - In Supabase dashboard, click **SQL Editor** in left sidebar
+   - Click **"New query"** button
+
+2. **Run the database setup script**:
+   - Open `complete-database-setup.sql` from your local project
+   - Copy all SQL code
+   - Paste into Supabase SQL Editor
+   - Click **"Run"** button or press `Ctrl+Enter`
+
+3. **Verify tables created**:
+   - Click **Table Editor** in left sidebar
+   - Confirm you see tables: `users`, `evidence`, `case_files`, `audit_logs`
 
 ### Project Structure
 
@@ -95,6 +162,7 @@ blockchain-evidence/
 ├── complete-database-setup.sql # Database schema
 ├── package.json           # Dependencies
 ├── .env.example          # Environment template
+├── .env                  # Your credentials (create this, never commit)
 └── docs/                 # Documentation
 ```
 
@@ -410,7 +478,7 @@ Any other context, mockups, or examples.
 
 Instead:
 
-1. **Email us**: Send details to `DGC2MHNE@proton.me`
+1. **Email us**: Send details to DGC2MHNE@proton.me
 2. **Include**: Detailed description and steps to reproduce
 3. **Wait**: We'll respond within 48 hours
 4. **Coordinate**: We'll work with you on disclosure timeline
@@ -426,20 +494,76 @@ We're particularly interested in:
 - Access control problems
 - Blockchain integration security
 
+## 🆘 Common Setup Issues
+
+### Issue: "Cannot connect to Supabase"
+
+**Check these:**
+- [ ] `.env` file exists in project root (not `.env.txt` or `env`)
+- [ ] `SUPABASE_URL` matches your project URL exactly
+- [ ] `SUPABASE_KEY` is the **anon public** key (not service_role)
+- [ ] No extra spaces or quotes in `.env` file
+- [ ] Server was restarted after editing `.env`
+
+**Verify your .env:**
+```bash
+# Linux/Mac
+cat .env
+
+# Windows
+type .env
+```
+
+### Issue: "Database tables don't exist"
+
+**Solution:**
+1. Go to Supabase → SQL Editor
+2. Click "New query"
+3. Copy all code from `complete-database-setup.sql`
+4. Paste and click "Run"
+5. Verify in Table Editor
+
+### Issue: "npm install fails"
+
+**Try:**
+```bash
+# Clear cache and retry
+npm cache clean --force
+npm install
+
+# Or delete and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+### Issue: "Port already in use"
+
+**Solution:**
+```bash
+# Find and kill process using port 3000
+# Linux/Mac:
+lsof -i :3000
+kill -9 [PID]
+
+# Windows:
+netstat -ano | findstr :3000
+taskkill /PID [PID] /F
+```
+
 ## 📞 Getting Help
 
 ### Communication Channels
 
 - **GitHub Issues**: For bugs and feature requests
 - **GitHub Discussions**: For questions and general discussion
-- **Email**: `DGC2MHNE@proton.me` for direct contact
+- **Email**: DGC2MHNE@proton.me for direct contact
 
 ### Before Asking for Help
 
 1. **Search existing issues** and discussions
-2. **Check the documentation** in the `docs/` folder
+2. **Check the documentation** in the docs/ folder
 3. **Review the README** for setup instructions
-4. **Try the troubleshooting guide**
+4. **Try the troubleshooting guide** above
 
 ### When Asking for Help
 
@@ -475,4 +599,4 @@ Every contribution, no matter how small, makes EVID-DGC better for everyone. Whe
 
 **Happy Contributing! 🚀**
 
-For questions about contributing, feel free to reach out via GitHub issues or email us at `DGC2MHNE@proton.me`.
+For questions about contributing, feel free to reach out via GitHub issues or email us at DGC2MHNE@proton.me.
