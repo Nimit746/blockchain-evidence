@@ -4,11 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="favicon.png" type="image/png" />
-    <link rel="shortcut icon" href="favicon.png" type="image/png" />
     <title>Privacy Policy | EVID-DGC</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="responsive-improvements.css" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   </head>
 
@@ -26,7 +24,7 @@
         </div>
         <div class="card-body">
           <div class="privacy-content">
-            <section>
+            <section style="--section-index: 0">
               <h2>1. Information We Collect</h2>
               <h3>Blockchain Data</h3>
               <ul>
@@ -69,7 +67,7 @@
               </ul>
             </section>
 
-            <section>
+            <section style="--section-index: 1">
               <h2>2. What Goes On-Chain vs Off-Chain</h2>
               <div class="data-storage-grid">
                 <div class="storage-item on-chain">
@@ -93,7 +91,7 @@
               </div>
             </section>
 
-            <section>
+            <section style="--section-index: 2">
               <h2>3. Data Security</h2>
               <ul>
                 <li>
@@ -115,7 +113,7 @@
               </ul>
             </section>
 
-            <section>
+            <section style="--section-index: 3">
               <h2>4. Your Rights</h2>
               <ul>
                 <li>
@@ -140,7 +138,7 @@
               </p>
             </section>
 
-            <section>
+            <section style="--section-index: 4">
               <h2>5. Contact Information</h2>
               <p>
                 For privacy-related questions:
@@ -157,12 +155,12 @@
         lucide.createIcons();
       });
     </script>
-    <script src="footer.js"></script>
 
     <script>
       window.addEventListener("load", () => {
         document.querySelector(".container")?.classList.add("animate-in");
       });
     </script>
+    <script src="footer.js"></script>
   </body>
 </html>
