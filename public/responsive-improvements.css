@@ -1,7 +1,7 @@
 /* Desktop Responsive Improvements */
 @media (min-width: 1024px) {
     .doc-grid {
-        grid-template-columns: repeat(4, 1fr) !important;
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
