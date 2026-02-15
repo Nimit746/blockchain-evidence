@@ -4,1142 +4,889 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Premium SEO & Meta -->
-    <title>EVID-DGC · Public Evidence Discovery Portal</title>
-    <meta name="description" content="Search public blockchain-verified evidence and case records - Transparent & Immutable">
-    <meta name="theme-color" content="#d32f2f">
-    
-    <!-- Critical CSS -->
+    <title>Search - EVID-DGC</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="responsive-improvements.css">
-    
-    <!-- Favicon Suite -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon.png">
-    
-    <!-- Premium Font Loading -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons - Pinned to specific version with Subresource Integrity -->
-    <script src="https://unpkg.com/lucide@0.344.0" integrity="sha384-Kl3cQhNN0eOsiHm8vPcqgY72Lp6P/9GPQOJGfQnN/zTbtFTl4tYxQ+UqIsb0m0Y0" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .search-container {
+            max-width: 1200px;
+            margin: 80px auto 40px;
+            padding: 20px;
+        }
+
+        .search-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .search-header h1 {
+            color: #D32F2F;
+            margin-bottom: 10px;
+        }
+
+        .search-box {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input-wrapper input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-input-wrapper input:focus {
+            outline: none;
+            border-color: #D32F2F;
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+
+        .search-btn {
+            padding: 15px 30px;
+            background: #D32F2F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #C41C3B;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+        }
+
+        .search-btn:active {
+            transform: translateY(0);
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .filter-btn.active {
+            background: #D32F2F;
+            color: white;
+            border-color: #D32F2F;
+            box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
+        }
+
+        .filter-btn:hover {
+            border-color: #D32F2F;
+            background: #FFEBEE;
+        }
+
+        .filter-btn.active:hover {
+            background: #C41C3B;
+        }
+
+        .advanced-filters {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-weight: 500;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #D32F2F;
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+
+        .reset-filters-btn {
+            padding: 10px 20px;
+            background: white;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .reset-filters-btn:hover {
+            border-color: #D32F2F;
+            color: #D32F2F;
+        }
+
+        .toggle-advanced-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .toggle-advanced-btn:hover {
+            border-color: #D32F2F;
+            color: #D32F2F;
+            background: #FFEBEE;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding: 20px 0;
+        }
+
+        .pagination-btn {
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: #D32F2F;
+            color: #D32F2F;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-btn.active {
+            background: #D32F2F;
+            color: white;
+            border-color: #D32F2F;
+        }
+
+        .pagination-info {
+            padding: 10px 20px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .search-results {
+            margin-top: 40px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .results-count {
+            font-size: 18px;
+            color: #475569;
+        }
+
+        .sort-dropdown {
+            padding: 8px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .result-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #D32F2F;
+            transform: translateY(-2px);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .result-type {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .result-type.case {
+            background: #FFEBEE;
+            color: #D32F2F;
+            border: 1px solid #D32F2F;
+        }
+
+        .result-type.evidence {
+            background: #E8F5E9;
+            color: #2E7D32;
+            border: 1px solid #2E7D32;
+        }
+
+        .result-meta {
+            display: flex;
+            gap: 20px;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .result-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .result-description {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .result-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .result-tag {
+            padding: 4px 10px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #475569;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .no-results-icon {
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: #FEE2E2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #FECACA;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                margin-top: 100px;
+                padding: 15px;
+            }
+
+            .search-input-wrapper {
+                flex-direction: column;
+            }
+
+            .search-icon {
+                right: 20px;
+                top: 20px;
+                transform: none;
+            }
+
+            .search-filters {
+                justify-content: flex-start;
+            }
+
+            .results-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .sort-dropdown {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="header-nav">
-        <div class="navbar-container">
-            <a href="index.html" class="nav-brand">
-                <img src="logo-32x32.png" alt="EVID-DGC Logo" class="brand-logo">
-                <span>EVID-DGC</span>
-            </a>
-            <div class="nav-items">
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="cases.html" class="nav-link">Cases</a>
-                <a href="evidence-manager.html" class="nav-link">Evidence</a>
-                <a href="search-public.html" class="nav-link" style="color: var(--primary-red); background: var(--search-red-soft);">Search</a>
-            </div>
-        </div>
-    </nav>
+    <div id="navbar-container"></div>
 
-    <!-- ===== PREMIUM SEARCH HERO ===== -->
-    <div class="search-hero">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <i data-lucide="globe"></i>
-                <span>Public Evidence Discovery Portal • Transparent & Immutable</span>
-            </div>
-            <h1>
-                <span class="hero-highlight">Discover</span> Blockchain<br>
-                Verified Evidence
-            </h1>
-            <p class="hero-subtitle">
-                Search through millions of public case records and blockchain-verified evidence.
-                Complete transparency with cryptographic proof of integrity.
-            </p>
-        </div>
-    </div>
-
-    <!-- ===== PREMIUM SEARCH BAR ===== -->
     <div class="search-container">
-        <div class="search-card">
-            <div class="search-form">
-                <div class="search-input-wrapper">
-                    <span class="search-icon">
-                        <i data-lucide="search"></i>
-                    </span>
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        class="search-input" 
-                        placeholder="Search by case number, evidence ID, description, or keywords..."
-                        autocomplete="off"
-                        autofocus
-                    >
-                </div>
+        <div class="search-header">
+            <h1>Search Cases & Evidence</h1>
+            <p style="color: #64748b;">Search through public cases and evidence records</p>
+        </div>
+
+        <div class="search-box">
+            <div class="search-input-wrapper">
+                <input type="text" id="searchInput" placeholder="Enter case number, title, or keywords..." />
                 <button class="search-btn" onclick="performSearch()">
                     <i data-lucide="search"></i>
                     Search
                 </button>
             </div>
         </div>
-    </div>
 
-    <!-- ===== PREMIUM QUICK STATS ===== -->
-    <div class="quick-stats">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i data-lucide="folder"></i>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-number" id="totalCases">12,847</div>
-                    <div class="stat-label">Public Cases</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i data-lucide="file"></i>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-number" id="totalEvidence">48,392</div>
-                    <div class="stat-label">Evidence Records</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i data-lucide="shield"></i>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-number" id="verifiedPercent">99.8%</div>
-                    <div class="stat-label">Blockchain Verified</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i data-lucide="users"></i>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-number" id="activeUsers">2,341</div>
-                    <div class="stat-label">Active Users</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== PREMIUM FILTERS SECTION ===== -->
-    <div class="filters-section" id="filtersSection" style="display: none;">
-        <div class="filters-header">
-            <div class="filters-title">
-                <i data-lucide="sliders-horizontal"></i>
-                <h3>Refine Your Search</h3>
-            </div>
-            <button class="clear-filters-btn" onclick="clearAllFilters()">
-                <i data-lucide="x"></i>
-                Clear Filters
+        <div class="search-filters">
+            <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">
+                <i data-lucide="list"></i>
+                All
+            </button>
+            <button class="filter-btn" data-filter="cases" onclick="setFilter('cases', this)">
+                <i data-lucide="folder"></i>
+                Cases
+            </button>
+            <button class="filter-btn" data-filter="evidence" onclick="setFilter('evidence', this)">
+                <i data-lucide="file"></i>
+                Evidence
             </button>
         </div>
-        
-        <div class="filters-grid">
+
+        <!-- Advanced Filters -->
+        <div class="advanced-filters" id="advancedFilters" style="display: none;">
             <div class="filter-group">
-                <span class="filter-label">
+                <label for="statusFilter">
                     <i data-lucide="tag"></i>
-                    Record Type
-                </span>
-                <select id="typeFilter" class="filter-select" onchange="applyFilters()">
-                    <option value="all">All Records</option>
-                    <option value="case">Cases Only</option>
-                    <option value="evidence">Evidence Only</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <span class="filter-label">
-                    <i data-lucide="clock"></i>
                     Status
-                </span>
-                <select id="statusFilter" class="filter-select" onchange="applyFilters()">
-                    <option value="all">All Statuses</option>
-                    <option value="active">Active Cases</option>
-                    <option value="closed">Closed Cases</option>
-                    <option value="verified">Verified Evidence</option>
-                    <option value="pending">Pending Verification</option>
+                </label>
+                <select id="statusFilter" onchange="applyAdvancedFilters()">
+                    <option value="">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="pending">Pending</option>
+                    <option value="verified">Verified</option>
+                    <option value="closed">Closed</option>
+                    <option value="archived">Archived</option>
                 </select>
             </div>
-            
+
             <div class="filter-group">
-                <span class="filter-label">
+                <label for="dateFromFilter">
                     <i data-lucide="calendar"></i>
-                    Date Range
-                </span>
-                <div class="date-inputs">
-                    <input type="date" id="dateFrom" class="date-input" placeholder="From" onchange="applyFilters()">
-                    <input type="date" id="dateTo" class="date-input" placeholder="To" onchange="applyFilters()">
-                </div>
+                    Date From
+                </label>
+                <input type="date" id="dateFromFilter" onchange="applyAdvancedFilters()">
             </div>
-            
+
             <div class="filter-group">
-                <span class="filter-label">
-                    <i data-lucide="shield"></i>
-                    Blockchain
-                </span>
-                <select id="blockchainFilter" class="filter-select" onchange="applyFilters()">
-                    <option value="all">All Records</option>
-                    <option value="verified">Verified Only</option>
-                    <option value="pending">Pending Verification</option>
+                <label for="dateToFilter">
+                    <i data-lucide="calendar"></i>
+                    Date To
+                </label>
+                <input type="date" id="dateToFilter" onchange="applyAdvancedFilters()">
+            </div>
+
+            <button class="reset-filters-btn" onclick="resetAdvancedFilters()">
+                <i data-lucide="x-circle"></i>
+                Reset Filters
+            </button>
+        </div>
+
+        <button class="toggle-advanced-btn" onclick="toggleAdvancedFilters()">
+            <i data-lucide="sliders-horizontal"></i>
+            <span id="filterToggleText">Show Advanced Filters</span>
+        </button>
+
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <div class="search-results" id="searchResults" style="display: none;">
+            <div class="results-header">
+                <div class="results-count" id="resultsCount">0 results found</div>
+                <select class="sort-dropdown" id="sortDropdown" onchange="sortResults()">
+                    <option value="relevance">Sort by: Relevance</option>
+                    <option value="date-desc">Date: Newest First</option>
+                    <option value="date-asc">Date: Oldest First</option>
+                    <option value="title">Title: A-Z</option>
                 </select>
             </div>
-        </div>
-    </div>
+            <div id="resultsContainer"></div>
 
-    <!-- ===== PREMIUM RESULTS HEADER ===== -->
-    <div id="resultsHeader" class="results-header" style="display: none;">
-        <div class="results-count">
-            <span class="count-number" id="resultCount">0</span>
-            <span class="count-text" id="resultText">results found</span>
-        </div>
-        <div class="results-sort">
-            <span class="sort-label">
-                <i data-lucide="arrow-up-down"></i>
-                Sort by:
-            </span>
-            <select id="sortSelect" class="sort-select" onchange="sortResults()">
-                <option value="relevance">Relevance</option>
-                <option value="date-desc">Newest First</option>
-                <option value="date-asc">Oldest First</option>
-                <option value="title">Title A-Z</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- ===== PREMIUM RESULTS GRID ===== -->
-    <div class="results-grid-section">
-        <div id="resultsContainer" class="results-grid">
-            <!-- Initial empty state with suggestions -->
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <i data-lucide="search"></i>
-                </div>
-                <h3>Start Your Discovery</h3>
-                <p>Enter a search term above to explore blockchain-verified evidence and case records</p>
-                <div class="empty-state-suggestions">
-                    <button class="suggestion-chip" onclick="suggestedSearch('theft')">
-                        🔍 Theft Cases
-                    </button>
-                    <button class="suggestion-chip" onclick="suggestedSearch('fraud')">
-                        🔍 Fraud Evidence
-                    </button>
-                    <button class="suggestion-chip" onclick="suggestedSearch('digital')">
-                        🔍 Digital Forensics
-                    </button>
-                    <button class="suggestion-chip" onclick="suggestedSearch('2024')">
-                        🔍 2024 Records
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== PREMIUM PAGINATION ===== -->
-    <div id="paginationSection" class="pagination-section" style="display: none;">
-        <div class="pagination" id="pagination">
-            <button class="pagination-btn" onclick="changePage('prev')" id="prevBtn" disabled>
-                <i data-lucide="chevron-left"></i>
-            </button>
-            <div class="pagination-pages" id="paginationPages">
-                <!-- Dynamic page buttons will be inserted here -->
-            </div>
-            <button class="pagination-btn" onclick="changePage('next')" id="nextBtn">
-                <i data-lucide="chevron-right"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- ===== PREMIUM RECORD DETAIL MODAL ===== -->
-    <div id="recordDetailModal" class="search-modal">
-        <div class="modal-content-premium">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                <h2 style="font-size: 24px; font-weight: 700; color: var(--search-gray-900);" id="recordModalTitle">
-                    Record Details
-                </h2>
-                <button onclick="closeRecordModal()" style="background: none; border: none; cursor: pointer; padding: 8px;">
-                    <i data-lucide="x" style="width: 20px; height: 20px; color: var(--search-gray-500);"></i>
+            <!-- Pagination -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
+                    <i data-lucide="chevron-left"></i>
+                    Previous
+                </button>
+                <div class="pagination-info" id="paginationInfo">Page 1 of 1</div>
+                <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
+                    Next
+                    <i data-lucide="chevron-right"></i>
                 </button>
             </div>
-            <div id="recordModalContent">
-                <!-- Dynamic record details will be inserted here -->
-            </div>
+        </div>
+
+        <div id="loadingIndicator" class="loading" style="display: none;">
+            <i data-lucide="loader" class="spin"></i>
+            <p>Searching...</p>
+        </div>
+
+        <div id="noResults" class="no-results" style="display: none;">
+            <i data-lucide="search-x" size="64" class="no-results-icon"></i>
+            <h3>No results found</h3>
+            <p>Try adjusting your search terms or filters</p>
         </div>
     </div>
 
+    <script src="navbar.js"></script>
     <script src="config.js"></script>
-    <script src="storage.js"></script>
-    
     <script>
-        // ===== PREMIUM PUBLIC SEARCH PORTAL =====
-        // Strict Red & White Theme - Discovery Experience
-        
-        // HTML escaping function to prevent XSS
-        function escapeHtml(value) {
-            if (value === undefined || value === null) return '';
-            return String(value)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-        
-        // Mock database for public records
-        const publicRecords = [
-            // Cases
-            {
-                id: 'CASE-2024-001',
-                title: 'Commercial Burglary Investigation',
-                type: 'case',
-                status: 'active',
-                date: '2024-03-15',
-                description: 'Investigation of commercial burglary involving multiple offices. Security footage and forensic evidence collected.',
-                location: 'Downtown Business District',
-                investigator: 'Det. Johnson',
-                evidenceCount: 7,
-                blockchainVerified: true,
-                tags: ['theft', 'commercial', 'security footage']
-            },
-            {
-                id: 'CASE-2024-002',
-                title: 'Financial Fraud Investigation',
-                type: 'case',
-                status: 'active',
-                date: '2024-03-12',
-                description: 'Complex financial fraud investigation involving multiple transactions and digital evidence.',
-                location: 'Financial District',
-                investigator: 'Det. Smith',
-                evidenceCount: 15,
-                blockchainVerified: true,
-                tags: ['fraud', 'financial', 'digital']
-            },
-            {
-                id: 'CASE-2024-003',
-                title: 'Retail Theft Case',
-                type: 'case',
-                status: 'closed',
-                date: '2024-03-10',
-                description: 'Retail theft investigation - suspect identified and charged. Case closed with conviction.',
-                location: 'Westside Mall',
-                investigator: 'Det. Davis',
-                evidenceCount: 12,
-                blockchainVerified: true,
-                tags: ['theft', 'retail', 'closed']
-            },
-            {
-                id: 'CASE-2024-004',
-                title: 'Cyber Crime Investigation',
-                type: 'case',
-                status: 'active',
-                date: '2024-03-18',
-                description: 'Network intrusion and data breach investigation affecting multiple systems.',
-                location: 'Tech Park',
-                investigator: 'Det. Johnson',
-                evidenceCount: 23,
-                blockchainVerified: true,
-                tags: ['cyber', 'digital', 'breach']
-            },
-            {
-                id: 'CASE-2024-005',
-                title: 'Missing Person Investigation',
-                type: 'case',
-                status: 'active',
-                date: '2024-03-16',
-                description: 'Active missing person investigation with multiple leads and digital evidence.',
-                location: 'Residential Area',
-                investigator: 'Det. Smith',
-                evidenceCount: 8,
-                blockchainVerified: false,
-                tags: ['missing person', 'search']
-            },
-            
-            // Evidence
-            {
-                id: 'EVD-2024-001',
-                title: 'Security Footage - Downtown Office',
-                type: 'evidence',
-                status: 'verified',
-                date: '2024-03-15',
-                description: 'Security camera footage showing suspect entering premises at 02:30 AM.',
-                caseId: 'CASE-2024-001',
-                fileType: 'video',
-                fileSize: 15728640,
-                uploadedBy: 'Det. Johnson',
-                blockchainVerified: true,
-                hash: '7d3a8f9b2c1e5a6b7c8d9e0f1a2b3c4d',
-                tags: ['video', 'security', 'cctv']
-            },
-            {
-                id: 'EVD-2024-002',
-                title: 'Fingerprint Lift - Door Handle',
-                type: 'evidence',
-                status: 'verified',
-                date: '2024-03-14',
-                description: 'Latent fingerprint lifted from main entrance door handle.',
-                caseId: 'CASE-2024-001',
-                fileType: 'image',
-                fileSize: 2457600,
-                uploadedBy: 'Det. Johnson',
-                blockchainVerified: true,
-                hash: '8e4c2d5f6a7b8c9d0e1f2a3b4c5d6e7f',
-                tags: ['fingerprint', 'forensic', 'image']
-            },
-            {
-                id: 'EVD-2024-003',
-                title: 'Financial Transaction Records',
-                type: 'evidence',
-                status: 'verified',
-                date: '2024-03-13',
-                description: 'Suspicious transaction records showing unauthorized transfers.',
-                caseId: 'CASE-2024-002',
-                fileType: 'document',
-                fileSize: 3145728,
-                uploadedBy: 'Det. Smith',
-                blockchainVerified: true,
-                hash: '2b5f6a7c8d9e0f1a2b3c4d5e6f7a8b9c',
-                tags: ['financial', 'document', 'fraud']
-            },
-            {
-                id: 'EVD-2024-004',
-                title: 'Network Logs - Intrusion Detection',
-                type: 'evidence',
-                status: 'verified',
-                date: '2024-03-18',
-                description: 'Network logs showing unauthorized access attempts and data exfiltration.',
-                caseId: 'CASE-2024-004',
-                fileType: 'digital',
-                fileSize: 52428800,
-                uploadedBy: 'Det. Johnson',
-                blockchainVerified: true,
-                hash: '3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f',
-                tags: ['digital', 'logs', 'cyber']
-            },
-            {
-                id: 'EVD-2024-005',
-                title: 'Digital Device Analysis',
-                type: 'evidence',
-                status: 'pending',
-                date: '2024-03-16',
-                description: 'Forensic analysis of smartphone recovered from scene.',
-                caseId: 'CASE-2024-005',
-                fileType: 'digital',
-                fileSize: 104857600,
-                uploadedBy: 'Det. Smith',
-                blockchainVerified: false,
-                hash: '9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d',
-                tags: ['digital', 'mobile', 'forensic']
-            }
-        ];
-        
-        // Store original unfiltered results
-        let allResults = [];
-        let currentResults = [];
+        let currentFilter = 'all';
+        let searchData = [];
+        let filteredResults = [];
         let currentPage = 1;
-        let itemsPerPage = 6;
-        let currentSearchTerm = '';
-        let activeFilters = {
-            type: 'all',
-            status: 'all',
-            blockchain: 'all',
-            dateFrom: '',
-            dateTo: ''
-        };
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Lucide icons
+        const resultsPerPage = 10;
+        let advancedFiltersVisible = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            
-            // Setup event listeners
-            setupEventListeners();
-            
-            // Update stats
-            updateStats();
-        });
-        
-        function setupEventListeners() {
-            // Search on Enter key
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('keypress', function(e) {
+
+            // Allow search on Enter key
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     performSearch();
                 }
             });
-            
-            // Live search with debounce (optional)
-            let debounceTimer;
-            searchInput.addEventListener('input', function() {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(() => {
-                    if (this.value.length >= 2) {
-                        performSearch();
-                    }
-                }, 500);
-            });
-        }
-        
-        function updateStats() {
-            // Animate stats
-            animateValue('totalCases', 0, 12847, 1500);
-            animateValue('totalEvidence', 0, 48392, 1500);
-            animateValue('verifiedPercent', 0, 99.8, 1500);
-            animateValue('activeUsers', 0, 2341, 1500);
-        }
-        
-        function animateValue(elementId, start, end, duration) {
-            const element = document.getElementById(elementId);
-            if (!element) return;
-            
-            const range = end - start;
-            const increment = range / (duration / 16);
-            let current = start;
-            
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= end) {
-                    current = end;
-                    clearInterval(timer);
-                }
-                
-                if (elementId === 'verifiedPercent') {
-                    element.textContent = current.toFixed(1) + '%';
-                } else {
-                    element.textContent = Math.round(current).toLocaleString();
-                }
-            }, 16);
-        }
-        
-        function performSearch() {
-            const searchTerm = document.getElementById('searchInput').value.trim();
-            currentSearchTerm = searchTerm;
-            
-            if (!searchTerm) {
-                showNotification('Please enter a search term', 'info');
-                return;
+
+            // Load initial data
+            loadInitialData();
+        });
+
+        // Toggle advanced filters
+        function toggleAdvancedFilters() {
+            advancedFiltersVisible = !advancedFiltersVisible;
+            const filtersDiv = document.getElementById('advancedFilters');
+            const toggleText = document.getElementById('filterToggleText');
+
+            if (advancedFiltersVisible) {
+                filtersDiv.style.display = 'grid';
+                toggleText.textContent = 'Hide Advanced Filters';
+            } else {
+                filtersDiv.style.display = 'none';
+                toggleText.textContent = 'Show Advanced Filters';
             }
-            
-            // Show loading state
-            showLoading();
-            
-            // Show filters section
-            document.getElementById('filtersSection').style.display = 'block';
-            
-            // Simulate search delay
-            setTimeout(() => {
-                // Filter records based on search term
-                let results = publicRecords.filter(record => {
-                    const searchLower = searchTerm.toLowerCase();
-                    return record.id.toLowerCase().includes(searchLower) ||
-                           record.title.toLowerCase().includes(searchLower) ||
-                           record.description.toLowerCase().includes(searchLower) ||
-                           (record.tags && record.tags.some(tag => tag.includes(searchLower))) ||
-                           (record.caseId && record.caseId.toLowerCase().includes(searchLower));
-                });
-                
-                // Store original unfiltered results
-                allResults = results;
-                currentResults = results;
-                currentPage = 1;
-                
-                // Apply filters (this will also render the results - NO double render)
-                applyFilters();
-                
-                // Track search
-                trackSearch(searchTerm, results.length);
-            }, 800);
-        }
-        
-        function applyFilters() {
-            // Get filter values
-            activeFilters = {
-                type: document.getElementById('typeFilter').value,
-                status: document.getElementById('statusFilter').value,
-                blockchain: document.getElementById('blockchainFilter').value,
-                dateFrom: document.getElementById('dateFrom').value,
-                dateTo: document.getElementById('dateTo').value
-            };
-            
-            // Apply filters to original unfiltered results (allResults)
-            let filteredResults = [...allResults];
-            
-            // Filter by type
-            if (activeFilters.type !== 'all') {
-                filteredResults = filteredResults.filter(r => r.type === activeFilters.type);
-            }
-            
-            // Filter by status
-            if (activeFilters.status !== 'all') {
-                filteredResults = filteredResults.filter(r => {
-                    if (activeFilters.status === 'active') return r.type === 'case' && r.status === 'active';
-                    if (activeFilters.status === 'closed') return r.type === 'case' && r.status === 'closed';
-                    if (activeFilters.status === 'verified') return r.type === 'evidence' && r.status === 'verified';
-                    if (activeFilters.status === 'pending') return r.type === 'evidence' && r.status === 'pending';
-                    return true;
-                });
-            }
-            
-            // Filter by blockchain
-            if (activeFilters.blockchain !== 'all') {
-                filteredResults = filteredResults.filter(r => {
-                    if (activeFilters.blockchain === 'verified') return r.blockchainVerified === true;
-                    if (activeFilters.blockchain === 'pending') return r.blockchainVerified === false;
-                    return true;
-                });
-            }
-            
-            // Filter by date range
-            if (activeFilters.dateFrom) {
-                filteredResults = filteredResults.filter(r => r.date >= activeFilters.dateFrom);
-            }
-            if (activeFilters.dateTo) {
-                filteredResults = filteredResults.filter(r => r.date <= activeFilters.dateTo);
-            }
-            
-            currentResults = filteredResults;
-            currentPage = 1;
-            renderResults();
-        }
-        
-        function renderResults() {
-            const container = document.getElementById('resultsContainer');
-            const resultsHeader = document.getElementById('resultsHeader');
-            const paginationSection = document.getElementById('paginationSection');
-            
-            // Update results count
-            document.getElementById('resultCount').textContent = currentResults.length;
-            document.getElementById('resultText').textContent = 
-                currentResults.length === 1 ? 'result found' : 'results found';
-            
-            if (currentResults.length === 0) {
-                // Show empty state
-                resultsHeader.style.display = 'none';
-                paginationSection.style.display = 'none';
-                
-                // Escape the search term to prevent XSS
-                const escapedSearchTerm = escapeHtml(currentSearchTerm);
-                
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">
-                            <i data-lucide="search-x"></i>
-                        </div>
-                        <h3>No Results Found</h3>
-                        <p>We couldn't find any matches for "${escapedSearchTerm}"</p>
-                        <div class="empty-state-suggestions">
-                            <button class="suggestion-chip" onclick="suggestedSearch('theft')">
-                                🔍 Try "theft"
-                            </button>
-                            <button class="suggestion-chip" onclick="suggestedSearch('fraud')">
-                                🔍 Try "fraud"
-                            </button>
-                            <button class="suggestion-chip" onclick="suggestedSearch('digital')">
-                                🔍 Try "digital"
-                            </button>
-                            <button class="suggestion-chip" onclick="clearSearch()">
-                                🧹 Clear Search
-                            </button>
-                        </div>
-                    </div>
-                `;
-                lucide.createIcons();
-                return;
-            }
-            
-            // Show results header and pagination
-            resultsHeader.style.display = 'flex';
-            paginationSection.style.display = 'block';
-            
-            // Apply sorting
-            const sortedResults = sortResultsData(currentResults);
-            
-            // Pagination
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const paginatedResults = sortedResults.slice(startIndex, endIndex);
-            
-            // Update pagination buttons
-            updatePagination(sortedResults.length);
-            
-            // Render results with escaped values (no inline onclick handlers)
-            container.innerHTML = paginatedResults.map(record => {
-                // Escape all user-provided content for display
-                const escapedId = escapeHtml(record.id);
-                const escapedTitle = escapeHtml(record.title);
-                const escapedDate = escapeHtml(formatDate(record.date));
-                const escapedDescription = escapeHtml(truncateText(record.description, 120));
-                const escapedCaseId = escapeHtml(record.caseId || '');
-                const escapedFileType = escapeHtml(record.fileType ? capitalizeFirst(record.fileType) : '');
-                const escapedFileSize = escapeHtml(record.fileSize ? formatFileSize(record.fileSize) : '');
-                const escapedInvestigator = escapeHtml(record.investigator || '');
-                const escapedLocation = escapeHtml(record.location || '');
-                
-                // Use HTML-escaped ID for the data attribute to prevent attribute injection
-                const dataId = escapeHtml(record.id || '');
-                
-                // Handle tags
-                const tagsHtml = record.tags ? record.tags.slice(0, 2).map(tag => 
-                    `<span class="result-tag">#${escapeHtml(tag)}</span>`
-                ).join('') : '';
-                
-                const moreTagsHtml = record.tags && record.tags.length > 2 ? 
-                    `<span class="result-tag">+${escapeHtml(String(record.tags.length - 2))}</span>` : '';
-                
-                const typeIcon = record.type === 'case' ? 'folder' : 'file';
-                const typeText = record.type === 'case' ? 'CASE' : 'EVIDENCE';
-                const idPrefix = record.type === 'case' ? 'Case #' : 'Evidence ID: ';
-                
-                return `
-                    <div class="result-card" data-record-id="${dataId}">
-                        <span class="result-type-badge ${record.type}">
-                            <i data-lucide="${typeIcon}"></i>
-                            ${typeText}
-                        </span>
-                        
-                        <h3 class="result-title">${escapedTitle}</h3>
-                        
-                        <div class="result-meta">
-                            <span class="result-meta-item">
-                                <i data-lucide="hash"></i>
-                                ${escapedId}
-                            </span>
-                            <span class="result-meta-item">
-                                <i data-lucide="calendar"></i>
-                                ${escapedDate}
-                            </span>
-                            ${record.type === 'evidence' && record.caseId ? `
-                                <span class="result-meta-item">
-                                    <i data-lucide="link"></i>
-                                    ${escapedCaseId}
-                                </span>
-                            ` : ''}
-                        </div>
-                        
-                        <div class="result-id">
-                            <i data-lucide="${typeIcon}"></i>
-                            ${idPrefix}${escapedId}
-                        </div>
-                        
-                        <p class="result-description">
-                            ${escapedDescription}
-                        </p>
-                        
-                        ${record.type === 'evidence' ? `
-                            <div class="evidence-metadata">
-                                <div class="evidence-meta-item">
-                                    <span class="evidence-meta-label">
-                                        <i data-lucide="hard-drive"></i>
-                                        File Type
-                                    </span>
-                                    <span class="evidence-meta-value">${escapedFileType}</span>
-                                </div>
-                                <div class="evidence-meta-item">
-                                    <span class="evidence-meta-label">
-                                        <i data-lucide="database"></i>
-                                        Size
-                                    </span>
-                                    <span class="evidence-meta-value">${escapedFileSize}</span>
-                                </div>
-                            </div>
-                        ` : `
-                            <div class="evidence-metadata">
-                                <div class="evidence-meta-item">
-                                    <span class="evidence-meta-label">
-                                        <i data-lucide="user"></i>
-                                        Investigator
-                                    </span>
-                                    <span class="evidence-meta-value">${escapedInvestigator}</span>
-                                </div>
-                                <div class="evidence-meta-item">
-                                    <span class="evidence-meta-label">
-                                        <i data-lucide="map-pin"></i>
-                                        Location
-                                    </span>
-                                    <span class="evidence-meta-value">${escapedLocation}</span>
-                                </div>
-                            </div>
-                        `}
-                        
-                        <div class="result-footer">
-                            <div class="result-tags">
-                                ${tagsHtml}
-                                ${moreTagsHtml}
-                            </div>
-                            ${record.blockchainVerified ? `
-                                <span class="blockchain-verified-badge">
-                                    <i data-lucide="shield"></i>
-                                    Verified
-                                </span>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            // Attach click event listeners to result cards
-            attachResultCardListeners();
-            
+
             lucide.createIcons();
         }
-        
-        function attachResultCardListeners() {
-            const container = document.getElementById('resultsContainer');
-            const cards = container.querySelectorAll('.result-card');
-            
-            cards.forEach(card => {
-                card.addEventListener('click', function() {
-                    const recordId = this.dataset.recordId;
-                    if (recordId) {
-                        viewRecord(recordId);
+
+        // Reset advanced filters
+        function resetAdvancedFilters() {
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('dateFromFilter').value = '';
+            document.getElementById('dateToFilter').value = '';
+
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                performSearch();
+            }
+        }
+
+        // Apply advanced filters
+        function applyAdvancedFilters() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                performSearch();
+            }
+        }
+
+        // Load cases and evidence from API
+        async function loadInitialData() {
+            try {
+                const apiBase = config.API_BASE_URL || window.location.origin;
+                const [casesRes, evidenceRes] = await Promise.all([
+                    fetch(`${apiBase}/cases`),
+                    fetch(`${apiBase}/evidence`)
+                ]);
+
+                if (!casesRes.ok || !evidenceRes.ok) {
+                    throw new Error('Failed to fetch data from API');
+                }
+
+                const casesData = await casesRes.json();
+                const evidenceData = await evidenceRes.json();
+
+                searchData = [
+                    ...(casesData.cases || []).map(c => ({ ...c, type: 'case' })),
+                    ...(evidenceData.evidence || []).map(e => ({ ...e, type: 'evidence' }))
+                ];
+
+                console.log('Loaded data:', searchData.length, 'items');
+
+                // Hide error message if data loaded successfully
+                document.getElementById('errorMessage').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showError('Failed to load data from server. Please try refreshing the page.');
+            }
+        }
+
+        function setFilter(filter, element) {
+            currentFilter = filter;
+
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            element.classList.add('active');
+
+            // Re-render icons after updating
+            lucide.createIcons();
+
+            // Re-run search if there's a query
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                performSearch();
+            }
+        }
+
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            // Hide previous results
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('noResults').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('pagination').style.display = 'none';
+
+            if (!query) {
+                showError('Please enter a search term');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            try {
+                // Get advanced filter values
+                const statusFilter = document.getElementById('statusFilter').value;
+                const dateFrom = document.getElementById('dateFromFilter').value;
+                const dateTo = document.getElementById('dateToFilter').value;
+
+                // Filter data based on query and filters
+                filteredResults = searchData.filter(item => {
+                    // Filter by type
+                    if (currentFilter !== 'all' && item.type !== currentFilter.replace('s', '')) {
+                        return false;
                     }
+
+                    // Filter by status
+                    if (statusFilter && item.status !== statusFilter) {
+                        return false;
+                    }
+
+                    // Filter by date range
+                    if (dateFrom || dateTo) {
+                        const itemDate = new Date(item.created_at || item.upload_date);
+                        if (dateFrom && itemDate < new Date(dateFrom)) return false;
+                        if (dateTo && itemDate > new Date(dateTo)) return false;
+                    }
+
+                    // Search in relevant fields
+                    const searchFields = [
+                        item.case_number,
+                        item.title,
+                        item.description,
+                        item.file_name,
+                        item.status
+                    ].filter(Boolean).join(' ').toLowerCase();
+
+                    return searchFields.includes(query);
                 });
-            });
-        }
-        
-        function sortResultsData(results) {
-            const sortValue = document.getElementById('sortSelect').value;
-            
-            return [...results].sort((a, b) => {
-                switch(sortValue) {
-                    case 'date-desc':
-                        return new Date(b.date) - new Date(a.date);
-                    case 'date-asc':
-                        return new Date(a.date) - new Date(b.date);
-                    case 'title':
-                        return a.title.localeCompare(b.title);
-                    case 'relevance':
-                    default:
-                        // Prioritize exact matches in title
-                        const searchLower = currentSearchTerm.toLowerCase();
-                        const aScore = (a.title.toLowerCase().includes(searchLower) ? 2 : 0) + 
-                                     (a.id.toLowerCase().includes(searchLower) ? 1 : 0);
-                        const bScore = (b.title.toLowerCase().includes(searchLower) ? 2 : 0) + 
-                                     (b.id.toLowerCase().includes(searchLower) ? 1 : 0);
-                        return bScore - aScore;
+
+                // Hide loading
+                document.getElementById('loadingIndicator').style.display = 'none';
+
+                // Reset to first page
+                currentPage = 1;
+
+                // Display results
+                if (filteredResults.length > 0) {
+                    displayResults();
+                } else {
+                    document.getElementById('noResults').style.display = 'block';
                 }
-            });
-        }
-        
-        function sortResults() {
-            currentPage = 1;
-            renderResults();
-        }
-        
-        function updatePagination(totalItems) {
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-            const paginationContainer = document.getElementById('pagination');
-            const paginationPages = document.getElementById('paginationPages');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (totalPages <= 1) {
-                paginationContainer.style.display = 'none';
-                return;
-            }
-            
-            paginationContainer.style.display = 'flex';
-            prevBtn.disabled = currentPage === 1;
-            nextBtn.disabled = currentPage === totalPages;
-            
-            // Clear existing page buttons
-            paginationPages.innerHTML = '';
-            
-            // Generate page buttons dynamically
-            for (let i = 1; i <= totalPages; i++) {
-                const pageBtn = document.createElement('button');
-                pageBtn.className = 'pagination-btn';
-                if (i === currentPage) {
-                    pageBtn.classList.add('active');
-                }
-                pageBtn.setAttribute('data-page', i);
-                pageBtn.textContent = i;
-                pageBtn.onclick = function() {
-                    goToPage(i);
-                };
-                paginationPages.appendChild(pageBtn);
+
+            } catch (error) {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                showError('Error performing search: ' + error.message);
             }
         }
-        
-        function goToPage(page) {
-            currentPage = page;
-            renderResults();
-            
-            // Scroll to results
-            document.querySelector('.results-header').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-        
-        function changePage(direction) {
-            if (direction === 'prev' && currentPage > 1) {
-                currentPage--;
-            } else if (direction === 'next') {
-                const totalPages = Math.ceil(currentResults.length / itemsPerPage);
-                if (currentPage < totalPages) {
-                    currentPage++;
-                }
-            }
-            renderResults();
-            
-            // Scroll to results
-            document.querySelector('.results-header').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-        
-        function showLoading() {
+
+        function displayResults() {
+            const startIndex = (currentPage - 1) * resultsPerPage;
+            const endIndex = startIndex + resultsPerPage;
+            const resultsToShow = filteredResults.slice(startIndex, endIndex);
+            const totalPages = Math.ceil(filteredResults.length / resultsPerPage);
+
+            document.getElementById('searchResults').style.display = 'block';
+            document.getElementById('resultsCount').textContent =
+                `${filteredResults.length} result${filteredResults.length !== 1 ? 's' : ''} found`;
+
             const container = document.getElementById('resultsContainer');
-            container.innerHTML = `
-                <div class="loading-state">
-                    <div class="loading-spinner"></div>
-                    <h3>Searching Records</h3>
-                    <p>Scanning blockchain-verified evidence database...</p>
-                </div>
-            `;
-        }
-        
-        function viewRecord(recordId) {
-            // Find the record in our data
-            const record = allResults.find(r => r.id === recordId) || 
-                          publicRecords.find(r => r.id === recordId);
-            
-            if (!record) {
-                showNotification('❌ Record not found', 'error');
-                return;
+            container.innerHTML = '';
+
+            resultsToShow.forEach(result => {
+                const card = createResultCard(result);
+                container.appendChild(card);
+            });
+
+            // Update pagination
+            if (totalPages > 1) {
+                document.getElementById('pagination').style.display = 'flex';
+                document.getElementById('paginationInfo').textContent =
+                    `Page ${currentPage} of ${totalPages}`;
+                document.getElementById('prevBtn').disabled = currentPage === 1;
+                document.getElementById('nextBtn').disabled = currentPage === totalPages;
             }
-            
-            // Escape record data for safe display
-            const escapedId = escapeHtml(record.id);
-            const escapedTitle = escapeHtml(record.title);
-            const escapedType = escapeHtml(record.type.toUpperCase());
-            const escapedDate = escapeHtml(formatDate(record.date));
-            const escapedDescription = escapeHtml(record.description);
-            const escapedBlockchainStatus = record.blockchainVerified ? 
-                '<span style="color: #10b981; display: flex; align-items: center; gap: 4px;"><i data-lucide="shield" style="width: 14px; height: 14px;"></i> Verified</span>' : 
-                '<span style="color: var(--search-gray-500);">Pending</span>';
-            
-            // Build modal content based on record type
-            let modalContent = '';
-            
-            if (record.type === 'case') {
-                const escapedLocation = escapeHtml(record.location);
-                const escapedInvestigator = escapeHtml(record.investigator);
-                const escapedEvidenceCount = escapeHtml(String(record.evidenceCount || 0));
-                
-                modalContent = `
-                    <div style="display: flex; flex-direction: column; gap: 20px;">
-                        <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--search-red-soft); border-radius: 16px;">
-                            <div style="width: 48px; height: 48px; background: var(--search-red-muted); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                                <i data-lucide="folder" style="width: 24px; height: 24px; color: var(--search-red);"></i>
+
+            lucide.createIcons();
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredResults.length / resultsPerPage);
+            const newPage = currentPage + direction;
+
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                displayResults();
+
+                // Scroll to top of results
+                document.getElementById('searchResults').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        function createResultCard(result) {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.onclick = () => viewResult(result);
+
+            const isCase = result.type === 'case';
+
+            card.innerHTML = `
+                <div class="result-header">
+                    <div>
+                        <div class="result-title">${isCase ? result.title : result.file_name}</div>
+                        <div class="result-meta">
+                            ${isCase ? `
+                                <div class="result-meta-item">
+                                    <i data-lucide="file-text" size="14"></i>
+                                    ${result.case_number}
+                                </div>
+                            ` : `
+                                <div class="result-meta-item">
+                                    <i data-lucide="link" size="14"></i>
+                                    ${result.case_number || 'N/A'}
+                                </div>
+                            `}
+                            <div class="result-meta-item">
+                                <i data-lucide="calendar" size="14"></i>
+                                ${formatDate(result.created_at || result.upload_date)}
                             </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Case ID</div>
-                                <div style="font-weight: 600; font-family: monospace;">${escapedId}</div>
-                            </div>
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Title</div>
-                                <div style="font-weight: 600; margin-top: 4px;">${escapedTitle}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Date</div>
-                                <div style="font-weight: 600; margin-top: 4px;">${escapedDate}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Location</div>
-                                <div style="font-weight: 600; margin-top: 4px;">${escapedLocation}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Investigator</div>
-                                <div style="font-weight: 600; margin-top: 4px;">${escapedInvestigator}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Evidence Items</div>
-                                <div style="font-weight: 600; margin-top: 4px;">${escapedEvidenceCount}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Blockchain</div>
-                                <div style="margin-top: 4px;">${escapedBlockchainStatus}</div>
-                            </div>
-                        </div>
-                        
-                        <div style="background: var(--search-gray-50); padding: 16px; border-radius: 12px;">
-                            <div style="font-size: 12px; color: var(--search-gray-500); margin-bottom: 8px;">Description</div>
-                            <p style="line-height: 1.6; color: var(--search-gray-700);">${escapedDescription}</p>
-                        </div>
-                        
-                        <div style="display: flex; gap: 12px; margin-top: 16px;">
-                            <button class="btn btn-primary" onclick="closeRecordModal()" style="flex: 1;">
-                                Close
-                            </button>
+                            ${result.status ? `
+                                <div class="result-meta-item">
+                                    <i data-lucide="info" size="14"></i>
+                                    ${result.status}
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
-                `;
-            } else {
-                const escapedCaseId = escapeHtml(record.caseId);
-                const escapedFileType = escapeHtml(capitalizeFirst(record.fileType));
-                const escapedFileSize = escapeHtml(formatFileSize(record.fileSize));
-                const escapedUploadedBy = escapeHtml(record.uploadedBy);
+                    <div class="result-type ${result.type}">${result.type}</div>
+                </div>
                 
-                modalContent = `
-                    <div style="display: flex; flex-direction: column; gap: 20px;">
-                        <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--search-red-soft); border-radius: 16px;">
-                            <div style="width: 48px; height: 48px; background: var(--search-red-muted); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                                <i data-lucide="file" style="width: 24px; height: 24px; color: var(--search-red);"></i>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Evidence ID</div>
-                                <div style="font-weight: 600; font-family: monospace;">${escapedId}</div>
-                            </div>
+                ${result.description ? `
+                    <div class="result-description">${result.description}</div>
+                ` : ''}
+                
+                ${!isCase && result.file_type ? `
+                    <div class="result-meta">
+                        <div class="result-meta-item">
+                            <i data-lucide="file" size="14"></i>
+                            ${result.file_type}
                         </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Title</div>
-                                <div style="font-weight: 600; margin-top: 4px;">${escapedTitle}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Date</div>
-                                <div style="font-weight: 600; margin-top: 4px;">${escapedDate}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Case ID</div>
-                                <div style="font-weight: 600; margin-top: 4px; font-family: monospace;">${escapedCaseId}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">File Type</div>
-                                <div style="font-weight: 600; margin-top: 4px;">${escapedFileType}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">File Size</div>
-                                <div style="font-weight: 600; margin-top: 4px;">${escapedFileSize}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Uploaded By</div>
-                                <div style="font-weight: 600; margin-top: 4px;">${escapedUploadedBy}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: var(--search-gray-500);">Blockchain</div>
-                                <div style="margin-top: 4px;">${escapedBlockchainStatus}</div>
-                            </div>
-                        </div>
-                        
-                        <div style="background: var(--search-gray-50); padding: 16px; border-radius: 12px;">
-                            <div style="font-size: 12px; color: var(--search-gray-500); margin-bottom: 8px;">Description</div>
-                            <p style="line-height: 1.6; color: var(--search-gray-700);">${escapedDescription}</p>
-                        </div>
-                        
-                        ${record.hash ? `
-                            <div style="background: var(--search-gray-50); padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all;">
-                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                                    <i data-lucide="fingerprint" style="width: 14px; height: 14px; color: var(--search-red);"></i>
-                                    <span style="font-weight: 600;">SHA-256 Hash</span>
-                                </div>
-                                ${escapeHtml(record.hash)}
+                        ${result.file_size ? `
+                            <div class="result-meta-item">
+                                <i data-lucide="hard-drive" size="14"></i>
+                                ${formatFileSize(result.file_size)}
                             </div>
                         ` : ''}
-                        
-                        <div style="display: flex; gap: 12px; margin-top: 16px;">
-                            <button class="btn btn-primary" onclick="closeRecordModal()" style="flex: 1;">
-                                Close
-                            </button>
-                        </div>
                     </div>
-                `;
-            }
-            
-            document.getElementById('recordModalTitle').textContent = `${record.type === 'case' ? 'Case' : 'Evidence'} Details`;
-            document.getElementById('recordModalContent').innerHTML = modalContent;
-            document.getElementById('recordDetailModal').classList.add('active');
-            
-            // Reinitialize icons in modal
-            lucide.createIcons();
-            
-            // Use raw record.id for notification (showNotification will escape it)
-            showNotification(`📋 Viewing ${record.type}: ${record.id}`, 'info');
-        }
-        
-        function closeRecordModal() {
-            document.getElementById('recordDetailModal').classList.remove('active');
-        }
-        
-        function suggestedSearch(term) {
-            document.getElementById('searchInput').value = term;
-            performSearch();
-        }
-        
-        function clearSearch() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('filtersSection').style.display = 'none';
-            document.getElementById('resultsHeader').style.display = 'none';
-            document.getElementById('paginationSection').style.display = 'none';
-            
-            // Restore initial empty state
-            const container = document.getElementById('resultsContainer');
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">
-                        <i data-lucide="search"></i>
-                    </div>
-                    <h3>Start Your Discovery</h3>
-                    <p>Enter a search term above to explore blockchain-verified evidence and case records</p>
-                    <div class="empty-state-suggestions">
-                        <button class="suggestion-chip" onclick="suggestedSearch('theft')">
-                            🔍 Theft Cases
-                        </button>
-                        <button class="suggestion-chip" onclick="suggestedSearch('fraud')">
-                            🔍 Fraud Evidence
-                        </button>
-                        <button class="suggestion-chip" onclick="suggestedSearch('digital')">
-                            🔍 Digital Forensics
-                        </button>
-                        <button class="suggestion-chip" onclick="suggestedSearch('2024')">
-                            🔍 2024 Records
-                        </button>
-                    </div>
-                </div>
+                ` : ''}
             `;
-            lucide.createIcons();
-            
-            showNotification('🧹 Search cleared', 'info');
+
+            return card;
         }
-        
-        function clearAllFilters() {
-            // Reset filter selects
-            document.getElementById('typeFilter').value = 'all';
-            document.getElementById('statusFilter').value = 'all';
-            document.getElementById('blockchainFilter').value = 'all';
-            document.getElementById('dateFrom').value = '';
-            document.getElementById('dateTo').value = '';
-            
-            // Reapply filters
-            applyFilters();
-            
-            showNotification('✅ All filters cleared', 'success');
+
+        function viewResult(result) {
+            if (result.type === 'case') {
+                window.location.href = `case-details.html?case=${result.case_number}`;
+            } else {
+                window.location.href = `evidence-verification.html?id=${result.id}`;
+            }
         }
-        
-        function trackSearch(term, resultCount) {
-            console.log(`Search tracked: "${term}" - ${resultCount} results`);
-            // In production, this would send analytics data
+
+        function sortResults() {
+            const sortValue = document.getElementById('sortDropdown').value;
+
+            // Sort the filtered results array
+            filteredResults.sort((a, b) => {
+                switch (sortValue) {
+                    case 'date-desc':
+                        const dateA = new Date(a.created_at || a.upload_date);
+                        const dateB = new Date(b.created_at || b.upload_date);
+                        return dateB - dateA;
+
+                    case 'date-asc':
+                        const dateA2 = new Date(a.created_at || a.upload_date);
+                        const dateB2 = new Date(b.created_at || b.upload_date);
+                        return dateA2 - dateB2;
+
+                    case 'title':
+                        const titleA = (a.title || a.file_name || '').toLowerCase();
+                        const titleB = (b.title || b.file_name || '').toLowerCase();
+                        return titleA.localeCompare(titleB);
+
+                    default: // relevance
+                        return 0;
+                }
+            });
+
+            // Reset to first page and display
+            currentPage = 1;
+            displayResults();
         }
-        
-        // ===== UTILITY FUNCTIONS =====
-        function truncateText(text, maxLength) {
-            if (text.length <= maxLength) return text;
-            return text.slice(0, maxLength) + '...';
-        }
-        
+
         function formatDate(dateString) {
             if (!dateString) return 'N/A';
             const date = new Date(dateString);
@@ -1149,7 +896,7 @@
                 day: 'numeric'
             });
         }
-        
+
         function formatFileSize(bytes) {
             if (!bytes) return 'N/A';
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -1157,102 +904,12 @@
             const i = Math.floor(Math.log(bytes) / Math.log(1024));
             return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
         }
-        
-        function capitalizeFirst(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
         }
-        
-        function showNotification(message, type = 'info') {
-            // Escape message to prevent XSS
-            const escapedMessage = escapeHtml(message);
-            
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 24px;
-                right: 24px;
-                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#d32f2f' : '#3b82f6'};
-                color: white;
-                padding: 14px 24px;
-                border-radius: 16px;
-                font-size: 14px;
-                font-weight: 500;
-                box-shadow: var(--shadow-red-lg);
-                z-index: 1100;
-                animation: slideIn 0.3s ease;
-                max-width: 400px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                backdrop-filter: blur(8px);
-            `;
-            
-            let icon = 'info';
-            if (type === 'success') icon = 'check-circle';
-            if (type === 'error') icon = 'alert-circle';
-            
-            notification.innerHTML = `<i data-lucide="${icon}" style="width: 20px; height: 20px; flex-shrink: 0;"></i>${escapedMessage}`;
-            document.body.appendChild(notification);
-            lucide.createIcons();
-            
-            setTimeout(() => {
-                notification.style.animation = 'fadeOut 0.3s ease forwards';
-                setTimeout(() => notification.remove(), 300);
-            }, 4000);
-        }
-        
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('recordDetailModal');
-            if (event.target === modal) {
-                closeRecordModal();
-            }
-        }
-        
-        // Add slideOut animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    opacity: 0;
-                    transform: translateX(100%);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-            }
-            
-            @keyframes fadeOut {
-                from {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-                to {
-                    opacity: 0;
-                    transform: translateX(100%);
-                }
-            }
-            
-            .search-modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(8px);
-                display: none;
-                align-items: center;
-                justify-content: center;
-                z-index: 1000;
-            }
-            
-            .search-modal.active {
-                display: flex;
-            }
-        `;
-        document.head.appendChild(style);
     </script>
     <script src="footer.js"></script>
 </body>
