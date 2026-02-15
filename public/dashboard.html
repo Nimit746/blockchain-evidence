@@ -4,89 +4,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Premium SEO & Meta -->
-    <title>EVID-DGC · Admin Command Center</title>
-    <meta name="description" content="Secure blockchain evidence management system - Enterprise dashboard">
-    <meta name="theme-color" content="#d32f2f">
-    
-    <!-- Critical CSS First -->
-    <link rel="stylesheet" href="styles.css">
+
+    <!-- SEO Meta Tags -->
+    <title>Dashboard | EVID-DGC</title>
+    <meta name="description"
+        content="Access your role-specific dashboard for secure evidence management and blockchain operations.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="stylesheet" href="styles.css?v=8">
     <link rel="stylesheet" href="responsive-improvements.css">
-    
-    <!-- Favicon Suite -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="favicon.png">
-    
-    <!-- Premium Font Loading -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons - Pinned to specific version with Subresource Integrity -->
-    <script src="https://unpkg.com/lucide@0.344.0" integrity="sha384-Kl3cQhNN0eOsiHm8vPcqgY72Lp6P/9GPQOJGfQnN/zTbtFTl4tYxQ+UqIsb0m0Y0" crossorigin="anonymous"></script>
-    
-    <!-- Google Analytics - Premium Tracking -->
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KEYDE0ZH4Z"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-        gtag('config', 'G-KEYDE0ZH4Z', {
-            'send_page_view': true,
-            'anonymize_ip': true,
-            'cookie_flags': 'SameSite=None;Secure'
-        });
+        gtag('config', 'G-KEYDE0ZH4Z');
     </script>
 </head>
 
 <body>
-    <!-- ===== PREMIUM DASHBOARD ROUTER ===== -->
-    
-    <!-- Loading State - Premium Experience -->
-    <div id="loadingState" class="dashboard-loader">
-        <div class="loader-card">
-            <div class="loader-icon">
-                <i data-lucide="fingerprint"></i>
+    <!-- Professional Navigation -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <div class="navbar-brand">
+                <img src="logo.png" alt="EVID-DGC Logo" class="navbar-logo">
+                <span>EVID-DGC</span>
             </div>
-            <h2>Accessing Command Center</h2>
-            <p>Establishing secure blockchain connection & loading your personalized workspace</p>
-            <div class="progress-premium">
-                <div class="progress-fill" id="progressFill" style="width: 10%;"></div>
-            </div>
-            <span class="progress-text" id="progressMessage">Initializing secure session...</span>
         </div>
-    </div>
-    
-    <!-- Error State - Premium Design -->
-    <div id="errorState" class="error-state-premium hidden">
-        <div class="error-card">
-            <div class="error-icon-wrapper">
-                <i data-lucide="shield-alert"></i>
+
+        <div class="navbar-right">
+            <div class="user-info-nav">
+                <span class="user-role" id="userRole">Loading...</span>
+                <span class="user-wallet" id="userWallet">0x****...****</span>
             </div>
-            <h2>Access Restricted</h2>
-            <p id="errorMessage">Unable to verify your credentials. Please try again or contact system administrator.</p>
-            <div class="error-actions">
-                <button onclick="retryDashboardLoad()" class="btn btn-primary">
-                    <i data-lucide="refresh-cw"></i>
-                    Retry Connection
-                </button>
-                <button onclick="goToLogin()" class="btn btn-outline">
-                    <i data-lucide="log-out"></i>
-                    Return to Login
-                </button>
+            <button class="logout-btn" id="logoutBtn">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loadingState" class="dashboard-loading">
+            <div class="loading-content">
+                <div class="loading-icon">
+                    <i data-lucide="loader"></i>
+                </div>
+                <h2>Loading Dashboard</h2>
+                <p>Please wait while we prepare your role-specific interface...</p>
+                <div class="loading-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <span class="progress-text">Authenticating user...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="dashboard-error hidden">
+            <div class="error-content">
+                <div class="error-icon">
+                    <i data-lucide="alert-triangle"></i>
+                </div>
+                <h2>Access Error</h2>
+                <p id="errorMessage">Unable to load dashboard. Please try again.</p>
+                <div class="error-actions">
+                    <button onclick="retryDashboardLoad()" class="btn btn-primary">
+                        <i data-lucide="refresh-cw"></i>
+                        Retry
+                    </button>
+                    <button onclick="goToLogin()" class="btn btn-outline">
+                        <i data-lucide="arrow-left"></i>
+                        Back to Login
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="config.js"></script>
     <script src="storage.js"></script>
-    
     <script>
-        // ===== PREMIUM DASHBOARD ROUTER =====
-        // Role-based dashboard routing with cinematic loading experience
-        
+        // Role mapping for dashboard routing
         const ROLE_DASHBOARDS = {
             // String-based roles
             'admin': 'admin.html',
@@ -97,8 +106,8 @@
             'evidence_manager': 'dashboard-manager.html',
             'auditor': 'dashboard-auditor.html',
             'public_viewer': 'dashboard-public.html',
-            
-            // Number-based roles (backward compatibility)
+
+            // Number-based roles (for backward compatibility)
             '1': 'dashboard-public.html',
             '2': 'dashboard-investigator.html',
             '3': 'dashboard-analyst.html',
@@ -116,284 +125,412 @@
             7: 'dashboard-auditor.html',
             8: 'admin.html'
         };
-        
+
         const ROLE_NAMES = {
-            'admin': 'System Administrator',
-            'investigator': 'Senior Investigator',
+            'admin': 'Administrator',
+            'investigator': 'Investigator',
             'forensic_analyst': 'Forensic Analyst',
-            'legal_professional': 'Legal Counsel',
+            'legal_professional': 'Legal Professional',
             'court_official': 'Court Official',
             'evidence_manager': 'Evidence Manager',
-            'auditor': 'Compliance Auditor',
+            'auditor': 'Auditor',
             'public_viewer': 'Public Viewer',
             '1': 'Public Viewer',
-            '2': 'Senior Investigator',
+            '2': 'Investigator',
             '3': 'Forensic Analyst',
-            '4': 'Legal Counsel',
+            '4': 'Legal Professional',
             '5': 'Court Official',
             '6': 'Evidence Manager',
-            '7': 'Compliance Auditor',
-            '8': 'System Administrator'
+            '7': 'Auditor',
+            '8': 'Administrator',
+            1: 'Public Viewer',
+            2: 'Investigator',
+            3: 'Forensic Analyst',
+            4: 'Legal Professional',
+            5: 'Court Official',
+            6: 'Evidence Manager',
+            7: 'Auditor',
+            8: 'Administrator'
         };
-        
-        // Role icons for enhanced UX
-        const ROLE_ICONS = {
-            'admin': 'shield',
-            'investigator': 'badge',
-            'forensic_analyst': 'microscope',
-            'legal_professional': 'scale',
-            'court_official': 'gavel',
-            'evidence_manager': 'database',
-            'auditor': 'clipboard-check',
-            'public_viewer': 'eye'
-        };
-        
-        // User cache for performance optimization
-        const userCache = new Map();
-        
+
         let retryCount = 0;
         const MAX_RETRIES = 2;
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Lucide icons
+
+        document.addEventListener('DOMContentLoaded', function () {
             lucide.createIcons();
-            // Start dashboard initialization
             initializeDashboard();
         });
-        
+
         async function initializeDashboard() {
-            try {
-                // Step 1: Initializing
-                updateProgress('Initializing secure environment...', 15);
-                await sleep(400);
-                
-                // Step 2: Check authentication
-                updateProgress('Verifying credentials...', 30);
-                await sleep(300);
-                
-                const currentUserRaw = localStorage.getItem('currentUser');
-                
-                if (!currentUserRaw) {
-                    window.location.replace('index.html');
-                    return;
-                }
-                
-                // Step 3: Loading user profile
-                updateProgress('Loading user profile...', 45);
-                await sleep(300);
-                
-                let userAccount = currentUserRaw;
-                let userData = null;
-                
-                // Parse user data if JSON format - WITH ERROR HANDLING
-                if (currentUserRaw.startsWith('{')) {
-                    try {
-                        const parsed = JSON.parse(currentUserRaw);
-                        // Validate parsed data structure
-                        if (parsed && typeof parsed === 'object') {
-                            userData = parsed.user;
-                            if (parsed.type === 'email') {
-                                userAccount = userData?.email || userAccount;
-                            } else {
-                                userAccount = userData?.walletAddress || userData?.address || userAccount;
-                            }
-                        }
-                    } catch (e) {
-                        console.error('Failed to parse user data JSON:', e);
-                        // If parsing fails, treat as corrupted and clear it
-                        localStorage.removeItem('currentUser');
-                        showError('User data corrupted. Please login again.');
-                        return;
-                    }
-                }
-                
-                // Step 4: Retrieving role
-                updateProgress('Configuring workspace...', 60);
-                await sleep(300);
-                
-                // Get user data if not already parsed (with cache and error handling)
-                if (!userData) {
-                    userData = await getUserInfo(userAccount);
-                }
-                
-                // Get selected role with safe fallback
-                let finalRole = null;
-                try {
-                    finalRole = localStorage.getItem('selectedRole');
-                } catch (e) {
-                    console.error('Failed to read selectedRole:', e);
-                }
-                
-                if (!finalRole && userData && userData.role) {
-                    finalRole = userData.role;
-                    try {
-                        localStorage.setItem('selectedRole', finalRole);
-                    } catch (e) {
-                        console.error('Failed to save selectedRole:', e);
-                    }
-                }
-                
-                if (!finalRole) {
-                    finalRole = 'public_viewer';
-                    try {
-                        localStorage.setItem('selectedRole', finalRole);
-                    } catch (e) {
-                        console.error('Failed to save default role:', e);
-                    }
-                }
-                
-                // Step 5: Preparing dashboard
-                updateProgress('Loading dashboard components...', 75);
-                await sleep(400);
-                
-                const userInfo = {
-                    role: finalRole,
-                    roleName: ROLE_NAMES[finalRole] || 'User',
-                    roleIcon: ROLE_ICONS[finalRole] || 'user',
-                    fullName: userData ? userData.fullName || userData.full_name || 'User' : 'User',
-                    walletAddress: userAccount
-                };
-                
-                // Step 6: Almost ready
-                updateProgress('Establishing blockchain connection...', 90);
-                await sleep(500);
-                
-                // Track successful access
-                if (typeof gtag === 'function') {
-                    gtag('event', 'dashboard_access', {
-                        'user_role': userInfo.roleName,
-                        'dashboard_url': getDashboardUrl(finalRole)
-                    });
-                }
-                
-                // Step 7: Complete
-                updateProgress('Redirecting to dashboard...', 100);
-                await sleep(300);
-                
-                // Redirect to role-specific dashboard
-                window.location.replace(getDashboardUrl(finalRole));
-                
-            } catch (error) {
-                console.error('Dashboard initialization error:', {
-                    message: error.message,
-                    stack: error.stack,
-                    currentUser: localStorage.getItem('currentUser'),
-                    retryCount
-                });
-                
-                if (retryCount < MAX_RETRIES) {
-                    retryCount++;
-                    updateProgress(`Retrying connection (${retryCount}/${MAX_RETRIES})...`, 30);
-                    await sleep(1000);
-                    initializeDashboard();
-                } else {
-                    showError(error.message || 'Unable to load dashboard. Please try again.');
-                }
-            }
+    const currentUserRaw = localStorage.getItem('currentUser');
+    if (!currentUserRaw) {
+        window.location.replace('index.html');
+        return;
+    }
+
+    try {
+        let userAccount = currentUserRaw;
+        let userData = null;
+
+        // Parse user info if stored as JSON
+        if (currentUserRaw.startsWith('{')) {
+            const parsed = JSON.parse(currentUserRaw);
+            userData = parsed.user;
+            userAccount = parsed.type === 'email'
+                ? userData.email
+                : userData.walletAddress || userData.address;
         }
-        
-        async function getUserInfo(userAccount) {
-            // Check cache first (performance optimization)
-            if (userCache.has(userAccount)) {
-                return userCache.get(userAccount);
-            }
-            
-            // Try to get from localStorage with error handling
-            try {
-                const savedUser = localStorage.getItem('evidUser_' + userAccount);
-                if (!savedUser) return null;
-                
-                try {
-                    const parsed = JSON.parse(savedUser);
-                    // Validate parsed data
-                    if (parsed && typeof parsed === 'object') {
-                        userCache.set(userAccount, parsed); // Cache for future use
-                        return parsed;
-                    } else {
-                        console.warn('Invalid user data format, clearing');
-                        localStorage.removeItem('evidUser_' + userAccount);
-                        return null;
-                    }
-                } catch (e) {
-                    console.error('Error parsing user data:', e);
-                    // Clear corrupted data
-                    localStorage.removeItem('evidUser_' + userAccount);
-                    return null;
-                }
-            } catch (e) {
-                console.error('Error accessing localStorage:', e);
-                return null;
-            }
+
+        // Load user profile if needed
+        if (!userData) {
+            userData = await getUserInfo(userAccount);
         }
-        
+
+        // Resolve role
+        let finalRole = localStorage.getItem('selectedRole')
+            || userData?.role
+            || 'public_viewer';
+
+        localStorage.setItem('selectedRole', finalRole);
+
+        const dashboardUrl = getDashboardUrl(finalRole);
+
+        // Track access BEFORE redirect
+        if (typeof gtag === 'function') {
+            gtag('event', 'dashboard_access', {
+                user_role: ROLE_NAMES[finalRole] || 'Unknown',
+                dashboard_url: dashboardUrl
+            });
+        }
+        updateProgress('Redirecting...', 100);
+        window.location.replace(dashboardUrl);
+
+    } catch (error) {
+        // error logging
+        console.error('Dashboard error:', {
+            message: error.message,
+            stack: error.stack,
+            currentUser: localStorage.getItem('currentUser'),
+            retryCount
+        });
+        showError(`Failed: ${error.message || 'Unable to load dashboard'}`);
+
+    }
+}
+
+        const userCache = new Map();
+
+async function getUserInfo(userAccount) {
+    if (userCache.has(userAccount)) {
+        return userCache.get(userAccount);
+    }
+
+    const savedUser = localStorage.getItem('evidUser_' + userAccount);
+    if (!savedUser) return null;
+
+    try {
+        const parsed = JSON.parse(savedUser);
+        userCache.set(userAccount, parsed);
+        return parsed;
+    } catch {
+        return null;
+    }
+}
+
+
         function getDashboardUrl(role) {
             return ROLE_DASHBOARDS[role] || 'dashboard-public.html';
         }
-        
+
+        function updateNavbarUserInfo(userInfo, userAccount) {
+            const userRoleEl = document.getElementById('userRole');
+            const userWalletEl = document.getElementById('userWallet');
+
+            if (userRoleEl) {
+                userRoleEl.textContent = ROLE_NAMES[userInfo.role] || 'User';
+            }
+
+            if (userWalletEl && userAccount) {
+                userWalletEl.textContent = truncateWallet(userAccount);
+            }
+        }
+
+        function truncateWallet(address) {
+            if (!address) return '';
+            // If it's an email or name (doesn't start with 0x and has length), return as is or slightly truncated
+            if (!address.startsWith('0x')) {
+                return address.length > 20 ? address.slice(0, 20) + '...' : address;
+            }
+            return address.slice(0, 6) + '...' + address.slice(-4);
+        }
+
         function updateProgress(message, percentage) {
-            const progressFill = document.getElementById('progressFill');
-            const progressMessage = document.getElementById('progressMessage');
-            
+            const progressText = document.querySelector('.progress-text');
+            const progressFill = document.querySelector('.progress-fill');
+
+            if (progressText) {
+                progressText.textContent = message;
+            }
+
             if (progressFill) {
                 progressFill.style.width = percentage + '%';
             }
-            
-            if (progressMessage) {
-                progressMessage.textContent = message;
-            }
         }
-        
+
         function showError(message) {
             const loadingState = document.getElementById('loadingState');
             const errorState = document.getElementById('errorState');
             const errorMessage = document.getElementById('errorMessage');
-            
+
             if (loadingState) loadingState.classList.add('hidden');
             if (errorState) errorState.classList.remove('hidden');
             if (errorMessage) errorMessage.textContent = message;
-            
+
             // Track error
             if (typeof gtag === 'function') {
                 gtag('event', 'dashboard_error', {
                     'error_message': message
                 });
             }
-            
-            // Reinitialize icons
-            lucide.createIcons();
         }
-        
+
         function retryDashboardLoad() {
             const loadingState = document.getElementById('loadingState');
             const errorState = document.getElementById('errorState');
-            
-            loadingState.classList.remove('hidden');
-            errorState.classList.add('hidden');
-            
-            updateProgress('Reconnecting to secure server...', 10);
+
+            if (loadingState) loadingState.classList.remove('hidden');
+            if (errorState) errorState.classList.add('hidden');
+
+            // Reset progress and retry count
+            updateProgress('Retrying...', 0);
             retryCount = 0;
-            
+
+            // Retry after a short delay
             setTimeout(() => {
                 initializeDashboard();
             }, 500);
         }
-        
+
         function goToLogin() {
-            // Clear sensitive data
-            try {
-                localStorage.removeItem('currentUser');
-                localStorage.removeItem('selectedRole');
-            } catch (e) {
-                console.error('Error clearing localStorage:', e);
+            window.location.href = 'index.html';
+        }
+
+        function logout() {
+            // Track logout
+            if (typeof gtag === 'function') {
+                gtag('event', 'user_logout', {
+                    'source': 'dashboard_router'
+                });
             }
-            
+
+            // Clear all user data
+            localStorage.clear();
+
             // Redirect to login
             window.location.href = 'index.html';
         }
-        
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
+
+        // Add some CSS for the loading and error states
+        const style = document.createElement('style');
+        style.textContent = `
+            .dashboard-loading, .dashboard-error {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 70vh;
+                text-align: center;
+            }
+
+            .loading-content, .error-content {
+                max-width: 400px;
+                padding: 40px;
+                background: var(--white);
+                border-radius: 16px;
+                box-shadow: var(--shadow-medium);
+                border: 1px solid var(--border-light);
+            }
+
+            .loading-icon, .error-icon {
+                margin-bottom: 24px;
+            }
+
+            .loading-icon i {
+                width: 48px;
+                height: 48px;
+                color: var(--primary-red);
+                animation: spin 1s linear infinite;
+            }
+
+            .error-icon i {
+                width: 48px;
+                height: 48px;
+                color: var(--error-color);
+            }
+
+            .loading-content h2, .error-content h2 {
+                color: var(--text-primary);
+                font-size: 1.5rem;
+                margin-bottom: 12px;
+                font-weight: 700;
+            }
+
+            .loading-content p, .error-content p {
+                color: var(--text-secondary);
+                margin-bottom: 24px;
+                line-height: 1.6;
+            }
+
+            .loading-progress {
+                margin-top: 32px;
+            }
+
+            .progress-bar {
+                width: 100%;
+                height: 6px;
+                background: var(--light-gray);
+                border-radius: 3px;
+                overflow: hidden;
+                margin-bottom: 12px;
+            }
+
+            .progress-fill {
+                height: 100%;
+                background: var(--primary-red);
+                border-radius: 3px;
+                transition: width 0.3s ease;
+                width: 0%;
+            }
+
+            .progress-text {
+                font-size: 0.9rem;
+                color: var(--text-muted);
+            }
+
+            .error-actions {
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .navbar {
+                background: var(--white);
+                border-bottom: 1px solid var(--border-light);
+                padding: 16px 24px;
+                box-shadow: var(--shadow-light);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .navbar-left, .navbar-right {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .navbar-brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: var(--primary-red);
+            }
+
+            .navbar-brand i {
+                width: 28px;
+                height: 28px;
+            }
+
+            .user-info-nav {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .user-role {
+                background: var(--primary-red);
+                color: var(--white);
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+
+            .user-wallet {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                background: var(--light-gray);
+                padding: 6px 10px;
+                border-radius: 6px;
+                border: 1px solid var(--border-light);
+            }
+
+            .logout-btn {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                background: var(--error-color);
+                color: var(--white);
+                border: none;
+                padding: 8px 16px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+
+            .logout-btn:hover {
+                background: #DC2626;
+                transform: translateY(-1px);
+            }
+
+            .logout-btn i {
+                width: 16px;
+                height: 16px;
+            }
+
+            @media (max-width: 768px) {
+                .navbar {
+                    flex-direction: column;
+                    gap: 12px;
+                    align-items: stretch;
+                }
+
+                .navbar-left, .navbar-right {
+                    justify-content: center;
+                }
+
+                .user-wallet {
+                    display: none;
+                }
+
+                .loading-content, .error-content {
+                    margin: 20px;
+                    padding: 24px;
+                }
+
+                .error-actions {
+                    flex-direction: column;
+                }
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
+<!--  -->
 </html>
