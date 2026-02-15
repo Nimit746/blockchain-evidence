@@ -136,7 +136,7 @@
             '8': 'System Administrator'
         };
         
-        // Role icons for enhanced UX (from your branch)
+        // Role icons for enhanced UX
         const ROLE_ICONS = {
             'admin': 'shield',
             'investigator': 'badge',
@@ -148,7 +148,7 @@
             'public_viewer': 'eye'
         };
         
-        // User cache for performance (from main branch)
+        // User cache for performance optimization
         const userCache = new Map();
         
         let retryCount = 0;
@@ -185,41 +185,34 @@
                 let userAccount = currentUserRaw;
                 let userData = null;
                 
-                // Parse user data if JSON format
+                // Parse user info if stored as JSON
                 if (currentUserRaw.startsWith('{')) {
                     try {
                         const parsed = JSON.parse(currentUserRaw);
                         userData = parsed.user;
-                        if (parsed.type === 'email') {
-                            userAccount = userData.email;
-                        } else {
-                            userAccount = userData.walletAddress || userData.address;
-                        }
+                        userAccount = parsed.type === 'email'
+                            ? userData.email
+                            : userData.walletAddress || userData.address;
                     } catch (e) {
                         console.debug('Error parsing user data:', e);
                     }
                 }
                 
                 // Step 4: Retrieving role
-                updateProgress('Configuring workspace...', 60);
+                updateProgress('Loading user profile...', 60);
                 await sleep(300);
                 
-                // Get user data if not already parsed (with cache)
+                // Load user profile if needed (with cache)
                 if (!userData) {
                     userData = await getUserInfo(userAccount);
                 }
                 
-                let finalRole = localStorage.getItem('selectedRole');
+                // Resolve role
+                let finalRole = localStorage.getItem('selectedRole')
+                    || userData?.role
+                    || 'public_viewer';
                 
-                if (!finalRole && userData && userData.role) {
-                    finalRole = userData.role;
-                    localStorage.setItem('selectedRole', finalRole);
-                }
-                
-                if (!finalRole) {
-                    finalRole = 'public_viewer';
-                    localStorage.setItem('selectedRole', finalRole);
-                }
+                localStorage.setItem('selectedRole', finalRole);
                 
                 // Step 5: Preparing dashboard
                 updateProgress('Loading dashboard components...', 75);
