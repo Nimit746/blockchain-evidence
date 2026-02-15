@@ -4,80 +4,1102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cases | Blockchain Evidence</title>
-    <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="shortcut icon" href="favicon.png" type="image/png">
+    
+    <!-- Premium SEO & Meta -->
+    <title>EVID-DGC · Case Management Vault</title>
+    <meta name="description" content="Secure case management and evidence tracking - Blockchain verified investigations">
+    <meta name="theme-color" content="#d32f2f">
+    
+    <!-- Critical CSS -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="responsive-improvements.css">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script src="config.js"></script>
-    <script src="storage.js"></script>
-    <script src="app.js"></script>
+    
+    <!-- Favicon Suite -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    
+    <!-- Premium Font Loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons - Pinned to specific version with Subresource Integrity -->
+    <script src="https://unpkg.com/lucide@0.344.0" integrity="sha384-Kl3cQhNN0eOsiHm8vPcqgY72Lp6P/9GPQOJGfQnN/zTbtFTl4tYxQ+UqIsb0m0Y0" crossorigin="anonymous"></script>
 </head>
 
 <body>
+    <!-- Navigation -->
     <nav class="header-nav">
         <div class="navbar-container">
             <a href="index.html" class="nav-brand">
-                <img src="logo.png" alt="EVID-DGC Logo" class="brand-logo">
+                <img src="logo-32x32.png" alt="EVID-DGC Logo" class="brand-logo">
                 <span>EVID-DGC</span>
             </a>
             <div class="nav-items">
                 <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="cases.html" class="nav-link" style="color: var(--primary-red);">Cases</a>
+                <a href="cases.html" class="nav-link" style="color: var(--primary-red); background: var(--cases-red-soft);">Cases</a>
             </div>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="hero-section" style="margin: 40px 0; text-align: left;">
-            <h1>Cases & Investigations</h1>
-            <p class="hero-subtitle">Search and manage evidence cases</p>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" class="form-control" placeholder="Search cases by ID, name, or status...">
-                    <button class="btn btn-primary">
-                        <i data-lucide="search"></i> Search
-                    </button>
-                    <button class="btn btn-outline">
-                        <i data-lucide="filter"></i> Filter
-                    </button>
-                </div>
+    <!-- ===== PREMIUM CASES HERO ===== -->
+    <div class="cases-hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i data-lucide="folder-lock"></i>
+                <span>Case Management Vault • Blockchain Secured</span>
             </div>
-            <div class="card-body">
-                <div class="table-container">
-                    <table class="user-table" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Case ID</th>
-                                <th>Title</th>
-                                <th>Status</th>
-                                <th>Created Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="5" style="text-align: center; padding: 40px; color: #666;">
-                                    <i data-lucide="folder-open"
-                                        style="width: 48px; height: 48px; margin-bottom: 10px; opacity: 0.5;"></i>
-                                    <p>No cases found. Start a new investigation from the dashboard.</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <h1>
+                <span class="hero-highlight">Evidence Cases</span><br>
+                & Investigations
+            </h1>
+            <p class="hero-subtitle">
+                Secure case inventory with blockchain-verified evidence tracking. 
+                Every case, every piece of evidence, immutably recorded.
+            </p>
+        </div>
+    </div>
+
+    <!-- ===== PREMIUM SEARCH SECTION ===== -->
+    <div class="search-section">
+        <div class="search-container">
+            <div class="search-grid">
+                <div class="search-input-wrapper">
+                    <span class="search-icon">
+                        <i data-lucide="search"></i>
+                    </span>
+                    <input type="text" id="caseSearchInput" class="search-input" placeholder="Search by case ID, title, investigator, or evidence..." autocomplete="off">
+                </div>
+                <div class="filter-group">
+                    <div class="filter-dropdown">
+                        <button class="filter-button" onclick="toggleFilterMenu()">
+                            <i data-lucide="sliders-horizontal"></i>
+                            <span>Filter</span>
+                        </button>
+                        <div id="filterMenu" class="filter-menu">
+                            <div class="filter-header">
+                                <h4>Filter Cases</h4>
+                                <button class="clear-filters" onclick="clearAllFilters()">Clear all</button>
+                            </div>
+                            <div class="filter-options">
+                                <div class="filter-option" onclick="toggleFilter(this, 'status', 'open')">
+                                    <input type="checkbox" id="filterOpen" checked>
+                                    <span>Open Cases</span>
+                                    <span class="count" id="openCount">3</span>
+                                </div>
+                                <div class="filter-option" onclick="toggleFilter(this, 'status', 'analyzing')">
+                                    <input type="checkbox" id="filterAnalyzing" checked>
+                                    <span>In Analysis</span>
+                                    <span class="count" id="analyzingCount">2</span>
+                                </div>
+                                <div class="filter-option" onclick="toggleFilter(this, 'status', 'closed')">
+                                    <input type="checkbox" id="filterClosed" checked>
+                                    <span>Closed Cases</span>
+                                    <span class="count" id="closedCount">1</span>
+                                </div>
+                                <div class="filter-option" onclick="toggleFilter(this, 'status', 'archived')">
+                                    <input type="checkbox" id="filterArchived" checked>
+                                    <span>Archived</span>
+                                    <span class="count" id="archivedCount">0</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--cases-gray-100);">
+                                <div class="filter-option" onclick="toggleFilter(this, 'blockchain', 'verified')">
+                                    <input type="checkbox" id="filterVerified">
+                                    <span>Blockchain Verified Only</span>
+                                    <span class="count" id="verifiedCount">6</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="filter-button" onclick="refreshCases()">
+                        <i data-lucide="refresh-cw"></i>
+                        <span>Refresh</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- ===== PREMIUM STATS BAR ===== -->
+    <div class="stats-bar">
+        <div class="stat-pill">
+            <div class="stat-pill-icon">
+                <i data-lucide="folder"></i>
+            </div>
+            <div class="stat-pill-content">
+                <div class="stat-pill-number" id="totalCases">6</div>
+                <div class="stat-pill-label">Total Cases</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="stat-pill-icon">
+                <i data-lucide="activity"></i>
+            </div>
+            <div class="stat-pill-content">
+                <div class="stat-pill-number" id="activeCases">3</div>
+                <div class="stat-pill-label">Active</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="stat-pill-icon">
+                <i data-lucide="file"></i>
+            </div>
+            <div class="stat-pill-content">
+                <div class="stat-pill-number" id="evidenceTotal">23</div>
+                <div class="stat-pill-label">Evidence Items</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="stat-pill-icon">
+                <i data-lucide="shield"></i>
+            </div>
+            <div class="stat-pill-content">
+                <div class="stat-pill-number" id="verifiedTotal">19</div>
+                <div class="stat-pill-label">Verified</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PREMIUM VIEW TOGGLE ===== -->
+    <div class="view-toggle">
+        <div class="view-mode">
+            <button class="view-btn active" onclick="setViewMode(event, 'grid')">
+                <i data-lucide="grid"></i>
+                Grid View
+            </button>
+            <button class="view-btn" onclick="setViewMode(event, 'table')">
+                <i data-lucide="table"></i>
+                Table View
+            </button>
+        </div>
+        <div class="sort-dropdown" onclick="toggleSortMenu()">
+            <i data-lucide="arrow-up-down"></i>
+            <span id="currentSort">Newest First</span>
+        </div>
+    </div>
+
+    <!-- ===== PREMIUM CASES GRID VIEW ===== -->
+    <div id="casesGridView" class="cases-grid-section">
+        <div class="cases-grid" id="casesGridContainer">
+            <!-- Case cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- ===== PREMIUM TABLE VIEW ===== -->
+    <div id="casesTableView" class="cases-table-container">
+        <table class="cases-table">
+            <thead>
+                <tr>
+                    <th>Case ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Investigator</th>
+                    <th>Evidence</th>
+                    <th>Blockchain</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="casesTableBody">
+                <!-- Table rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===== PREMIUM PAGINATION ===== -->
+    <div class="pagination" id="pagination">
+        <button class="pagination-btn" onclick="changePage('prev')" id="prevBtn" disabled>
+            <i data-lucide="chevron-left"></i>
+        </button>
+        <div class="pagination-pages" id="paginationPages">
+            <!-- Dynamic page buttons will be inserted here -->
+        </div>
+        <button class="pagination-btn" onclick="changePage('next')" id="nextBtn">
+            <i data-lucide="chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- ===== PREMIUM MODAL ===== -->
+    <div id="caseDetailModal" class="cases-modal">
+        <div class="modal-content-premium">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 style="font-size: 24px; font-weight: 700; color: var(--cases-gray-900);" id="modalTitle">
+                    Case Details
+                </h2>
+                <button onclick="closeCaseModal()" style="background: none; border: none; cursor: pointer; padding: 8px;">
+                    <i data-lucide="x" style="width: 20px; height: 20px; color: var(--cases-gray-500);"></i>
+                </button>
+            </div>
+            <div id="modalContent">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="storage.js"></script>
+    <script src="app.js"></script>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // ===== PREMIUM CASES MANAGEMENT =====
+        // Strict Red & White Theme - No Tables, No Inline Styles
+        
+        let casesData = [];
+        let currentView = 'grid';
+        let currentPage = 1;
+        let itemsPerPage = 6;
+        let currentSort = 'newest';
+        let lastFilteredCount = 0; // Track filtered results count for pagination
+        let activeFilters = {
+            status: {
+                open: true,
+                analyzing: true,
+                closed: true,
+                archived: true
+            },
+            blockchain: {
+                verifiedOnly: false // Default to false = show all cases
+            }
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons
             lucide.createIcons();
+            // Load cases data
+            loadCasesData();
+            // Setup event listeners
+            setupEventListeners();
         });
+        
+        function setupEventListeners() {
+            // Search input with debounce
+            const searchInput = document.getElementById('caseSearchInput');
+            let debounceTimer;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    filterCases();
+                }, 300);
+            });
+            
+            // Click outside to close filter menu
+            document.addEventListener('click', function(event) {
+                const filterMenu = document.getElementById('filterMenu');
+                const filterButton = document.querySelector('.filter-button');
+                if (!filterButton.contains(event.target) && !filterMenu.contains(event.target)) {
+                    filterMenu.classList.remove('active');
+                }
+            });
+        }
+        
+        // Helper function to normalize status values (convert to lowercase)
+        function normalizeStatus(status) {
+            if (status === undefined || status === null) return '';
+            return String(status).toLowerCase();
+        }
+        
+        function loadCasesData() {
+            let storedCases = [];
+            
+            // Safely parse localStorage with try/catch to prevent crashes from corrupted data
+            try {
+                const casesFromStorage = localStorage.getItem('cases');
+                if (casesFromStorage) {
+                    storedCases = JSON.parse(casesFromStorage);
+                    if (!Array.isArray(storedCases)) {
+                        console.warn('Stored cases is not an array, resetting to empty array');
+                        storedCases = [];
+                        localStorage.removeItem('cases');
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to parse stored cases, using empty array:', e);
+                storedCases = [];
+                localStorage.removeItem('cases');
+            }
+            
+            if (storedCases.length > 0) {
+                // Normalize status values from stored cases (could be uppercase from investigator dashboard)
+                casesData = storedCases.map(c => ({
+                    ...c,
+                    status: normalizeStatus(c.status)
+                }));
+            } else {
+                // Mock data for demonstration - already lowercase
+                casesData = [
+                    {
+                        id: 'INV-2024-001',
+                        title: 'Burglary Investigation',
+                        status: 'open',
+                        location: 'Downtown Office Building',
+                        date: '2024-03-15',
+                        investigator: 'Det. Johnson',
+                        evidenceCount: 7,
+                        blockchainVerified: true,
+                        priority: 'High',
+                        description: 'Commercial burglary investigation involving multiple offices. Security footage recovered.'
+                    },
+                    {
+                        id: 'INV-2024-002',
+                        title: 'Fraud Investigation',
+                        status: 'analyzing',
+                        location: 'Financial District',
+                        date: '2024-03-12',
+                        investigator: 'Det. Smith',
+                        evidenceCount: 15,
+                        blockchainVerified: true,
+                        priority: 'Medium',
+                        description: 'Financial fraud investigation involving multiple transactions and digital evidence.'
+                    },
+                    {
+                        id: 'INV-2024-003',
+                        title: 'Theft Investigation',
+                        status: 'closed',
+                        location: 'Retail Store',
+                        date: '2024-03-10',
+                        investigator: 'Det. Davis',
+                        evidenceCount: 12,
+                        blockchainVerified: true,
+                        priority: 'Low',
+                        description: 'Retail theft investigation - case resolved and archived.'
+                    },
+                    {
+                        id: 'INV-2024-004',
+                        title: 'Cyber Crime Investigation',
+                        status: 'open',
+                        location: 'Tech Park',
+                        date: '2024-03-18',
+                        investigator: 'Det. Johnson',
+                        evidenceCount: 23,
+                        blockchainVerified: true,
+                        priority: 'High',
+                        description: 'Network intrusion and data breach investigation.'
+                    },
+                    {
+                        id: 'INV-2024-005',
+                        title: 'Missing Person',
+                        status: 'analyzing',
+                        location: 'Residential Area',
+                        date: '2024-03-16',
+                        investigator: 'Det. Smith',
+                        evidenceCount: 8,
+                        blockchainVerified: false,
+                        priority: 'High',
+                        description: 'Active missing person investigation with multiple leads.'
+                    },
+                    {
+                        id: 'INV-2024-006',
+                        title: 'Property Damage',
+                        status: 'closed',
+                        location: 'Industrial Zone',
+                        date: '2024-03-08',
+                        investigator: 'Det. Davis',
+                        evidenceCount: 4,
+                        blockchainVerified: true,
+                        priority: 'Low',
+                        description: 'Vandalism case - suspect identified and charged.'
+                    }
+                ];
+            }
+            
+            updateStats();
+            filterCases();
+        }
+        
+        function updateStats() {
+            const total = casesData.length;
+            const active = casesData.filter(c => c.status === 'open' || c.status === 'analyzing').length;
+            const evidenceTotal = casesData.reduce((sum, c) => sum + (c.evidenceCount || 0), 0);
+            const verifiedTotal = casesData.filter(c => c.blockchainVerified).length;
+            
+            document.getElementById('totalCases').textContent = total;
+            document.getElementById('activeCases').textContent = active;
+            document.getElementById('evidenceTotal').textContent = evidenceTotal;
+            document.getElementById('verifiedTotal').textContent = verifiedTotal;
+            
+            // Update filter counts
+            document.getElementById('openCount').textContent = casesData.filter(c => c.status === 'open').length;
+            document.getElementById('analyzingCount').textContent = casesData.filter(c => c.status === 'analyzing').length;
+            document.getElementById('closedCount').textContent = casesData.filter(c => c.status === 'closed').length;
+            document.getElementById('archivedCount').textContent = casesData.filter(c => c.status === 'archived').length;
+            document.getElementById('verifiedCount').textContent = verifiedTotal;
+        }
+        
+        // HTML escaping function to prevent XSS
+        function escapeHtml(unsafe) {
+            if (unsafe === undefined || unsafe === null) return '';
+            return String(unsafe)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+        
+        function filterCases() {
+            const searchTerm = document.getElementById('caseSearchInput').value.toLowerCase();
+            
+            let filteredCases = casesData.filter(caseItem => {
+                // Apply status filters
+                if (!activeFilters.status[caseItem.status]) {
+                    return false;
+                }
+                
+                // Apply blockchain filter - only filter if verifiedOnly is true
+                if (activeFilters.blockchain.verifiedOnly && !caseItem.blockchainVerified) {
+                    return false;
+                }
+                
+                // Apply search filter with safe property access
+                if (searchTerm) {
+                    // Safely access investigator with fallback for officer property
+                    const investigator = caseItem.investigator || caseItem.officer || '';
+                    
+                    return caseItem.id.toLowerCase().includes(searchTerm) ||
+                           caseItem.title.toLowerCase().includes(searchTerm) ||
+                           investigator.toLowerCase().includes(searchTerm) ||
+                           (caseItem.location || '').toLowerCase().includes(searchTerm);
+                }
+                
+                return true;
+            });
+            
+            // Apply sorting
+            filteredCases = sortCases(filteredCases);
+            
+            // Store filtered count for pagination
+            lastFilteredCount = filteredCases.length;
+            
+            // Render based on current view
+            renderCases(filteredCases);
+            updatePagination(filteredCases.length);
+        }
+        
+        function sortCases(cases) {
+            const sortValue = document.getElementById('currentSort').textContent;
+            
+            return [...cases].sort((a, b) => {
+                switch(sortValue) {
+                    case 'Newest First':
+                        return new Date(b.date) - new Date(a.date);
+                    case 'Oldest First':
+                        return new Date(a.date) - new Date(b.date);
+                    case 'Case ID':
+                        return a.id.localeCompare(b.id);
+                    case 'Title A-Z':
+                        return a.title.localeCompare(b.title);
+                    case 'Priority':
+                        const priorityWeight = { 'High': 3, 'Medium': 2, 'Low': 1 };
+                        return (priorityWeight[b.priority] || 0) - (priorityWeight[a.priority] || 0);
+                    default:
+                        return new Date(b.date) - new Date(a.date);
+                }
+            });
+        }
+        
+        function renderCases(filteredCases) {
+            if (currentView === 'grid') {
+                renderGridView(filteredCases);
+                document.getElementById('casesGridView').style.display = 'block';
+                document.getElementById('casesTableView').style.display = 'none';
+            } else {
+                renderTableView(filteredCases);
+                document.getElementById('casesGridView').style.display = 'none';
+                document.getElementById('casesTableView').style.display = 'block';
+            }
+            
+            // Attach event listeners after rendering
+            attachEventListeners();
+        }
+        
+        function attachEventListeners() {
+            // Attach click listeners for grid view cards
+            const cards = document.querySelectorAll('.case-vault-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const caseId = this.dataset.caseId;
+                    if (caseId) {
+                        viewCaseDetails(caseId);
+                    }
+                });
+            });
+            
+            // Attach click listeners for view buttons in grid view
+            const viewButtons = document.querySelectorAll('[data-action="view"]');
+            viewButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const caseId = this.dataset.caseId;
+                    if (caseId) {
+                        viewCaseDetails(caseId);
+                    }
+                });
+            });
+            
+            // Attach click listeners for add evidence buttons in grid view
+            const addButtons = document.querySelectorAll('[data-action="add-evidence"]');
+            addButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const caseId = this.dataset.caseId;
+                    if (caseId) {
+                        addEvidence(caseId);
+                    }
+                });
+            });
+            
+            // Attach click listeners for table rows
+            const tableRows = document.querySelectorAll('.cases-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    const caseId = this.dataset.caseId;
+                    if (caseId) {
+                        viewCaseDetails(caseId);
+                    }
+                });
+            });
+            
+            // Attach click listeners for table view buttons
+            const tableViewButtons = document.querySelectorAll('.cases-table tbody tr .btn-primary');
+            tableViewButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const caseId = this.dataset.caseId;
+                    if (caseId) {
+                        viewCaseDetails(caseId);
+                    }
+                });
+            });
+        }
+        
+        function renderGridView(cases) {
+            const container = document.getElementById('casesGridContainer');
+            
+            if (cases.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i data-lucide="folder-open"></i>
+                        </div>
+                        <h3>No cases found</h3>
+                        <p>No cases match your current filters. Try adjusting your search criteria.</p>
+                        <button class="btn btn-primary" onclick="clearAllFilters()">
+                            <i data-lucide="x-circle"></i>
+                            Clear Filters
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+            
+            // Pagination
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedCases = cases.slice(startIndex, endIndex);
+            
+            container.innerHTML = paginatedCases.map(caseItem => {
+                // Escape all user-provided content
+                const escapedId = escapeHtml(caseItem.id);
+                const escapedTitle = escapeHtml(caseItem.title);
+                const escapedLocation = escapeHtml(caseItem.location || 'N/A');
+                const escapedInvestigator = escapeHtml(caseItem.investigator || caseItem.officer || 'N/A');
+                const escapedPriority = escapeHtml(caseItem.priority || 'N/A');
+                const escapedDate = escapeHtml(formatDate(caseItem.date));
+                const escapedEvidenceCount = escapeHtml(String(caseItem.evidenceCount || 0));
+                const caseIcon = getCaseIcon(caseItem.status);
+                const statusIcon = getStatusIcon(caseItem.status);
+                const status = escapeHtml(caseItem.status.toUpperCase());
+                const priorityColor = getPriorityColor(caseItem.priority);
+                const blockchainBadge = caseItem.blockchainVerified ? 
+                    '<span class="blockchain-badge"><i data-lucide="shield"></i> Verified</span>' : '';
+                
+                // Use raw ID for data attributes (escaped for HTML safety)
+                const dataId = escapeHtml(caseItem.id || '');
+                
+                return `
+                    <div class="case-vault-card" data-case-id="${dataId}">
+                        <div class="case-header">
+                            <div class="case-type-icon">
+                                <i data-lucide="${caseIcon}"></i>
+                            </div>
+                            <span class="case-status ${caseItem.status}">
+                                <i data-lucide="${statusIcon}"></i>
+                                ${status}
+                            </span>
+                        </div>
+                        
+                        <h3 class="case-title">${escapedTitle}</h3>
+                        <div class="case-id">
+                            <i data-lucide="hash"></i>
+                            ${escapedId}
+                        </div>
+                        
+                        <div class="case-metadata">
+                            <div class="case-meta-item">
+                                <span class="meta-label">
+                                    <i data-lucide="map-pin"></i>
+                                    Location
+                                </span>
+                                <span class="meta-value">${escapedLocation}</span>
+                            </div>
+                            <div class="case-meta-item">
+                                <span class="meta-label">
+                                    <i data-lucide="calendar"></i>
+                                    Created
+                                </span>
+                                <span class="meta-value">${escapedDate}</span>
+                            </div>
+                            <div class="case-meta-item">
+                                <span class="meta-label">
+                                    <i data-lucide="user"></i>
+                                    Investigator
+                                </span>
+                                <span class="meta-value">${escapedInvestigator}</span>
+                            </div>
+                            <div class="case-meta-item">
+                                <span class="meta-label">
+                                    <i data-lucide="flag"></i>
+                                    Priority
+                                </span>
+                                <span class="meta-value" style="color: ${priorityColor}">${escapedPriority}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="case-evidence-summary">
+                            <span class="evidence-count">
+                                <i data-lucide="file"></i>
+                                ${escapedEvidenceCount} Evidence Items
+                            </span>
+                            ${blockchainBadge}
+                        </div>
+                        
+                        <div class="case-actions">
+                            <button class="btn btn-primary btn-sm" data-action="view" data-case-id="${dataId}">
+                                <i data-lucide="eye"></i>
+                                View Details
+                            </button>
+                            <button class="btn btn-outline btn-sm" data-action="add-evidence" data-case-id="${dataId}">
+                                <i data-lucide="plus"></i>
+                                Add Evidence
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            lucide.createIcons();
+        }
+        
+        function renderTableView(cases) {
+            const tableBody = document.getElementById('casesTableBody');
+            
+            if (cases.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 48px;">
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                                <i data-lucide="folder-open" style="width: 48px; height: 48px; color: var(--cases-gray-400);"></i>
+                                <p style="color: var(--cases-gray-600);">No cases found</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                lucide.createIcons();
+                return;
+            }
+            
+            // Pagination
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedCases = cases.slice(startIndex, endIndex);
+            
+            tableBody.innerHTML = paginatedCases.map(caseItem => {
+                // Escape all user-provided content
+                const escapedId = escapeHtml(caseItem.id);
+                const escapedTitle = escapeHtml(caseItem.title);
+                const escapedInvestigator = escapeHtml(caseItem.investigator || caseItem.officer || 'N/A');
+                const escapedDate = escapeHtml(formatDate(caseItem.date));
+                const escapedEvidenceCount = escapeHtml(String(caseItem.evidenceCount || 0));
+                const statusIcon = getStatusIcon(caseItem.status);
+                const status = escapeHtml(caseItem.status.toUpperCase());
+                const blockchainBadge = caseItem.blockchainVerified ? 
+                    '<span class="blockchain-badge" style="display: inline-flex;"><i data-lucide="shield"></i> Verified</span>' : '—';
+                
+                // Use escaped ID for data attributes
+                const dataId = escapeHtml(caseItem.id || '');
+                
+                return `
+                    <tr data-case-id="${dataId}">
+                        <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">${escapedId}</td>
+                        <td style="font-weight: 600;">${escapedTitle}</td>
+                        <td>
+                            <span class="case-status ${caseItem.status}" style="display: inline-flex;">
+                                <i data-lucide="${statusIcon}" style="width: 12px; height: 12px;"></i>
+                                ${status}
+                            </span>
+                        </td>
+                        <td>${escapedDate}</td>
+                        <td>${escapedInvestigator}</td>
+                        <td>${escapedEvidenceCount}</td>
+                        <td>${blockchainBadge}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" data-case-id="${dataId}" data-action="view">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            lucide.createIcons();
+        }
+        
+        function updatePagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const paginationContainer = document.getElementById('pagination');
+            const paginationPages = document.getElementById('paginationPages');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (totalPages <= 1) {
+                paginationContainer.style.display = 'none';
+                return;
+            }
+            
+            paginationContainer.style.display = 'flex';
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+            
+            // Clear existing page buttons
+            paginationPages.innerHTML = '';
+            
+            // Generate page buttons dynamically
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'pagination-btn';
+                if (i === currentPage) {
+                    pageBtn.classList.add('active');
+                }
+                pageBtn.setAttribute('data-page', i);
+                pageBtn.textContent = i;
+                pageBtn.onclick = function() {
+                    goToPage(i);
+                };
+                paginationPages.appendChild(pageBtn);
+            }
+        }
+        
+        function goToPage(page) {
+            currentPage = page;
+            filterCases();
+            
+            // Scroll to the appropriate visible element based on current view
+            const scrollTarget = currentView === 'grid' 
+                ? document.getElementById('casesGridView')
+                : document.getElementById('casesTableView');
+            
+            if (scrollTarget) {
+                scrollTarget.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+        
+        function changePage(direction) {
+            // Calculate total pages from filtered results count
+            const totalPages = Math.ceil(lastFilteredCount / itemsPerPage);
+            
+            if (direction === 'prev' && currentPage > 1) {
+                currentPage--;
+                filterCases();
+            } else if (direction === 'next' && currentPage < totalPages) {
+                currentPage++;
+                filterCases();
+            }
+            
+            // Scroll to the appropriate visible element based on current view
+            const scrollTarget = currentView === 'grid' 
+                ? document.getElementById('casesGridView')
+                : document.getElementById('casesTableView');
+            
+            if (scrollTarget) {
+                scrollTarget.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+        
+        function setViewMode(event, mode) {
+            currentView = mode;
+            currentPage = 1; // Reset to first page
+            
+            // Update active state
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            filterCases();
+            
+            // Scroll to the appropriate visible element based on current view
+            const scrollTarget = currentView === 'grid' 
+                ? document.getElementById('casesGridView')
+                : document.getElementById('casesTableView');
+            
+            if (scrollTarget) {
+                scrollTarget.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+        
+        function toggleFilterMenu() {
+            const filterMenu = document.getElementById('filterMenu');
+            filterMenu.classList.toggle('active');
+        }
+        
+        function toggleFilter(element, filterType, filterValue) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            
+            if (filterType === 'status') {
+                activeFilters.status[filterValue] = checkbox.checked;
+            } else if (filterType === 'blockchain') {
+                activeFilters.blockchain.verifiedOnly = checkbox.checked;
+            }
+            
+            currentPage = 1; // Reset to first page
+            filterCases();
+        }
+        
+        function clearAllFilters() {
+            // Reset status checkboxes to checked (show all statuses)
+            document.querySelectorAll('.filter-option input[type="checkbox"]:not(#filterVerified)').forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            
+            // Uncheck blockchain "verified only" checkbox
+            const verifiedCheckbox = document.getElementById('filterVerified');
+            if (verifiedCheckbox) {
+                verifiedCheckbox.checked = false;
+            }
+            
+            // Reset filters object - default to show all cases
+            activeFilters = {
+                status: {
+                    open: true,
+                    analyzing: true,
+                    closed: true,
+                    archived: true
+                },
+                blockchain: {
+                    verifiedOnly: false // Default to false = show all cases
+                }
+            };
+            
+            // Clear search
+            document.getElementById('caseSearchInput').value = '';
+            
+            currentPage = 1;
+            filterCases();
+        }
+        
+        function toggleSortMenu() {
+            const sortOptions = ['Newest First', 'Oldest First', 'Case ID', 'Title A-Z', 'Priority'];
+            const currentSort = document.getElementById('currentSort').textContent;
+            const nextIndex = (sortOptions.indexOf(currentSort) + 1) % sortOptions.length;
+            document.getElementById('currentSort').textContent = sortOptions[nextIndex];
+            
+            filterCases();
+        }
+        
+        function viewCaseDetails(caseId) {
+            const caseItem = casesData.find(c => c.id === caseId);
+            if (!caseItem) return;
+            
+            // Escape all user-provided content for modal
+            const escapedTitle = escapeHtml(caseItem.title);
+            const escapedId = escapeHtml(caseItem.id);
+            const escapedLocation = escapeHtml(caseItem.location || 'N/A');
+            const escapedInvestigator = escapeHtml(caseItem.investigator || caseItem.officer || 'N/A');
+            const escapedPriority = escapeHtml(caseItem.priority || 'N/A');
+            const escapedDate = escapeHtml(formatDate(caseItem.date));
+            const escapedEvidenceCount = escapeHtml(String(caseItem.evidenceCount || 0));
+            const escapedDescription = escapeHtml(caseItem.description || 'No description provided.');
+            const statusIcon = getStatusIcon(caseItem.status);
+            const status = escapeHtml(caseItem.status.toUpperCase());
+            const priorityColor = getPriorityColor(caseItem.priority);
+            const blockchainStatus = caseItem.blockchainVerified ? 
+                '<span style="display: inline-flex; align-items: center; gap: 6px; color: #065f46;"><i data-lucide="shield" style="width: 14px; height: 14px;"></i>Verified</span>' : 
+                '<span style="color: var(--cases-gray-500);">Pending</span>';
+            
+            const modalContent = `
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="font-size: 20px; font-weight: 700; color: var(--cases-gray-900);">${escapedTitle}</h3>
+                            <p style="color: var(--cases-gray-500); font-family: monospace; margin-top: 4px;">${escapedId}</p>
+                        </div>
+                        <span class="case-status ${caseItem.status}">
+                            <i data-lucide="${statusIcon}"></i>
+                            ${status}
+                        </span>
+                    </div>
+                    
+                    <div style="background: var(--cases-red-soft); padding: 24px; border-radius: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <span style="font-size: 12px; color: var(--cases-gray-500);">Location</span>
+                                <p style="font-weight: 600; margin-top: 4px;">${escapedLocation}</p>
+                            </div>
+                            <div>
+                                <span style="font-size: 12px; color: var(--cases-gray-500);">Created Date</span>
+                                <p style="font-weight: 600; margin-top: 4px;">${escapedDate}</p>
+                            </div>
+                            <div>
+                                <span style="font-size: 12px; color: var(--cases-gray-500);">Investigator</span>
+                                <p style="font-weight: 600; margin-top: 4px;">${escapedInvestigator}</p>
+                            </div>
+                            <div>
+                                <span style="font-size: 12px; color: var(--cases-gray-500);">Priority</span>
+                                <p style="font-weight: 600; margin-top: 4px; color: ${priorityColor}">${escapedPriority}</p>
+                            </div>
+                            <div>
+                                <span style="font-size: 12px; color: var(--cases-gray-500);">Evidence Count</span>
+                                <p style="font-weight: 600; margin-top: 4px;">${escapedEvidenceCount} items</p>
+                            </div>
+                            <div>
+                                <span style="font-size: 12px; color: var(--cases-gray-500);">Blockchain Status</span>
+                                <p style="margin-top: 4px;">${blockchainStatus}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <span style="font-size: 14px; font-weight: 600; color: var(--cases-gray-700);">Case Description</span>
+                        <p style="margin-top: 8px; color: var(--cases-gray-600); line-height: 1.6;">
+                            ${escapedDescription}
+                        </p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 16px; margin-top: 8px;">
+                        <button class="btn btn-primary" onclick="addEvidence('${escapedId}')" style="flex: 1;">
+                            <i data-lucide="plus"></i>
+                            Add Evidence
+                        </button>
+                        <button class="btn btn-outline" onclick="closeCaseModal()" style="flex: 1;">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalTitle').textContent = 'Case Details';
+            document.getElementById('modalContent').innerHTML = modalContent;
+            document.getElementById('caseDetailModal').classList.add('active');
+            lucide.createIcons();
+        }
+        
+        function addEvidence(caseId) {
+            closeCaseModal();
+            // Redirect to evidence upload with case ID
+            window.location.href = `evidence-manager.html?case=${encodeURIComponent(caseId)}`;
+        }
+        
+        function refreshCases() {
+            showNotification('🔄 Refreshing case data...', 'info');
+            setTimeout(() => {
+                loadCasesData();
+                showNotification('✅ Cases updated successfully', 'success');
+            }, 1000);
+        }
+        
+        function closeCaseModal() {
+            document.getElementById('caseDetailModal').classList.remove('active');
+        }
+        
+        // ===== UTILITY FUNCTIONS =====
+        function getCaseIcon(status) {
+            switch(status) {
+                case 'open': return 'folder';
+                case 'analyzing': return 'activity';
+                case 'closed': return 'check-circle';
+                case 'archived': return 'archive';
+                default: return 'folder';
+            }
+        }
+        
+        function getStatusIcon(status) {
+            switch(status) {
+                case 'open': return 'circle';
+                case 'analyzing': return 'activity';
+                case 'closed': return 'check-circle';
+                case 'archived': return 'archive';
+                default: return 'circle';
+            }
+        }
+        
+        function getPriorityColor(priority) {
+            switch(priority) {
+                case 'High': return 'var(--cases-red)';
+                case 'Medium': return '#f59e0b';
+                case 'Low': return '#10b981';
+                default: return 'var(--cases-gray-600)';
+            }
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 24px;
+                right: 24px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#d32f2f' : '#3b82f6'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 12px;
+                font-size: 14px;
+                font-weight: 500;
+                box-shadow: var(--shadow-red-lg);
+                z-index: 1100;
+                animation: slideIn 0.3s ease;
+                max-width: 400px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            `;
+            notification.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" style="width: 18px; height: 18px;"></i>${escapeHtml(message)}`;
+            document.body.appendChild(notification);
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('caseDetailModal');
+            if (event.target === modal) {
+                closeCaseModal();
+            }
+        }
     </script>
     <script src="footer.js"></script>
 </body>
